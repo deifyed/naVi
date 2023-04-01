@@ -12,6 +12,14 @@ function M.open(callback)
 
     local content = {}
 
+    -- Automatically enter insert mode upon opening prompt
+    api.nvim_create_autocmd({"BufEnter"}, {
+        buffer = buf,
+        callback = function()
+            api.nvim_feedkeys("i", "n", true)
+        end
+    })
+
     api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
     api.nvim_buf_attach(buf, true, {
         on_lines = function()
