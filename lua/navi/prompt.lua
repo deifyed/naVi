@@ -11,6 +11,7 @@ function M.open(callback)
     local buf = api.nvim_create_buf(false, true)
 
     local content = {}
+    local canceled = false
 
     -- Automatically enter insert mode upon opening prompt
     api.nvim_create_autocmd({"BufEnter"}, {
@@ -24,6 +25,10 @@ function M.open(callback)
     api.nvim_buf_attach(buf, true, {
         on_detach = function()
             content = api.nvim_buf_get_lines(buf, 0, api.nvim_buf_line_count(buf), true)
+
+            if canceled then
+                return
+            end
 
             vim.schedule(function()
                 callback(table.concat(content, "\n"))
@@ -53,6 +58,13 @@ function M.open(callback)
     win = api.nvim_open_win(buf, true, opts)
 
     api.nvim_buf_set_keymap(buf, "i", "<CR>", "", {callback = function() api.nvim_win_close(win, false) end})
+    api.nvim_buf_set_keymap(buf, "i", "<ESC>", "", {
+        callback = function()
+            canceled = true
+
+            api.nvim_win_close(win, false)
+        end,
+    })
 end
 
 return M
