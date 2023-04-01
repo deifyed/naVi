@@ -4,12 +4,7 @@ local M = {}
 
 -- Opens a prompt window and calls the callback with the content of the prompt
 function M.open(callback)
-    if cursor_end == nil then
-        cursor_end = cursor_start
-    end
-
     local buf = api.nvim_create_buf(false, true)
-
     local content = {}
     local canceled = false
 
@@ -24,11 +19,11 @@ function M.open(callback)
     api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
     api.nvim_buf_attach(buf, true, {
         on_detach = function()
-            content = api.nvim_buf_get_lines(buf, 0, api.nvim_buf_line_count(buf), true)
-
             if canceled then
                 return
             end
+
+            content = api.nvim_buf_get_lines(buf, 0, api.nvim_buf_line_count(buf), true)
 
             vim.schedule(function()
                 callback(table.concat(content, "\n"))
