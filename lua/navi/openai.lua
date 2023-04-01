@@ -1,4 +1,5 @@
 local http = require("http")
+local instructions = require("navi.instructions")
 
 local M = {}
 
@@ -10,7 +11,7 @@ function M.request(prompt, callback)
             model = "gpt-3.5-turbo",
             messages = {{
                 role = "user",
-                content = prompt,
+                content = instructions.prefix .. "\n" .. prompt,
             }},
             max_tokens = 64,
             temperature = 0.6,
