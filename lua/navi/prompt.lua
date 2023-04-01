@@ -2,12 +2,11 @@ local api = vim.api
 
 local M = {}
 
-function M.open(parent_buffer, cursor_start, cursor_end)
+-- Opens a prompt window and calls the callback with the content of the prompt
+function M.open(callback)
     if cursor_end == nil then
         cursor_end = cursor_start
     end
-
-    print(parent_buffer, cursor_start, cursor_end)
 
     local buf = api.nvim_create_buf(false, true)
 
@@ -20,7 +19,7 @@ function M.open(parent_buffer, cursor_start, cursor_end)
         end,
         on_detach = function()
             vim.schedule(function()
-                api.nvim_buf_set_lines(parent_buffer, cursor_start, cursor_end, false, content)
+                callback(table.concat(content, "\n"))
             end)
         end,
     })
