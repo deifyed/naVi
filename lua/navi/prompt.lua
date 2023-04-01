@@ -22,10 +22,9 @@ function M.open(callback)
 
     api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
     api.nvim_buf_attach(buf, true, {
-        on_lines = function()
-            content = api.nvim_buf_get_lines(buf, 0, api.nvim_buf_line_count(buf), true)
-        end,
         on_detach = function()
+            content = api.nvim_buf_get_lines(buf, 0, api.nvim_buf_line_count(buf), true)
+
             vim.schedule(function()
                 callback(table.concat(content, "\n"))
             end)
