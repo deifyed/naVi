@@ -1,6 +1,6 @@
 local M = {}
 
-function M.split(inputstr, sep)
+function M.string_split(inputstr, sep)
         if sep == nil then
                 sep = "%s"
         end
@@ -9,6 +9,12 @@ function M.split(inputstr, sep)
                 table.insert(t, str)
         end
         return t
+end
+
+function M.table_count(t)
+        local count = 0
+        for _ in pairs(t) do count = count + 1 end
+        return count
 end
 
 return M
