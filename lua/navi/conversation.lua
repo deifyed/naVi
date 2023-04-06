@@ -20,4 +20,13 @@ function M.pushWithContext(context, content)
     M.push(content)
 end
 
+function M.pushResponse(content)
+    local msg = {
+        role = "assistant",
+        content = content
+    }
+
+    table.insert(M.messages, msg)
+end
+
 return M

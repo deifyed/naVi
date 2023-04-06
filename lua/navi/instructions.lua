@@ -11,8 +11,4 @@ M.prefix = table.concat({
     "The code should be written in a language related to the filetype " .. vim.bo.filetype .. " unless otherwise specified.",
 }, "\n")
 
-function M.enrichSelection(context, prompt)
-    return "Consider the following code:\n\n```" .. context .. "```\n\n" .. prompt
-end
-
 return M

@@ -18,15 +18,9 @@ function M.request_without_context()
                 return
             end
 
-            local splitResponse = utils.string_split(response, "\n")
-            local unpackedResponse = {unpack(splitResponse, 2, utils.table_count(splitResponse) - 1)}
+            conversation.pushResponse(response)
 
-            if vim.env.NAVI_DEBUG == "true" then
-                print(vim.inspect(splitResponse))
-                print(vim.inspect(unpackedResponse))
-            end
-
-            api.nvim_buf_set_lines(current_buffer, row - 1, row - 1, false, unpackedResponse)
+            api.nvim_buf_set_lines(current_buffer, row - 1, row - 1, false, utils.cleanResponse(response))
         end)
     end)
 end
@@ -59,15 +53,9 @@ function M.request_with_context(buf, start_position, end_position)
                 return
             end
 
-            local splitResponse = utils.string_split(response, "\n")
-            local unpackedResponse = {unpack(splitResponse, 2, utils.table_count(splitResponse) - 1)}
+            conversation.pushResponse(response)
 
-            if vim.env.NAVI_DEBUG == "true" then
-                print(vim.inspect(splitResponse))
-                print(vim.inspect(unpackedResponse))
-            end
-
-            api.nvim_buf_set_lines(buf, from_row, to_row, false, unpackedResponse)
+            api.nvim_buf_set_lines(buf, from_row, to_row, false, utils.cleanResponse(response))
         end)
     end)
 end
