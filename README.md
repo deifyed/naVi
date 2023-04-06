@@ -21,7 +21,7 @@ Add the following to your Packer config
 
 ```lua
     use({
-        '~/output/programming/.lab/naVi/',
+        'deifyed/naVi',
         requires = {'jcdickinson/http.nvim', run = 'cargo build --workspace --release'},
     })
 ```
