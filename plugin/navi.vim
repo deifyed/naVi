@@ -6,4 +6,8 @@ let g:loaded_navi = 1
 let s:navi_deps_dir = expand("<sfile>:h:r") . "/../lua/navi/deps"
 exe "lua package.path = package.path .. ';" . s:navi_deps_dir . "/lua-?/init.lua'"
 
-command! -nargs=0 NaviOpen lua require("navi").navi_open()
+command! -range -nargs=0 NaviOpenRange lua require("navi").openRange()
+command! -nargs=0 NaviOpen lua require("navi").open()
+
+imap <C-n> <ESC>:NaviOpen<CR>
+vmap <C-n> <ESC>:NaviOpenRange<CR>
