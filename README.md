@@ -46,3 +46,5 @@ export NAVI_DEBUG=true
     > https://platform.openai.com/
 - I'm already using the `<C-n>` keybinding. How can I change it?
     > You can't yet. I'm new to Lua and the NeoVim API. Getting there though.
+- Can naVi close nVim for me?
+    > AI has come far, but not that far.
