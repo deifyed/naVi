@@ -40,6 +40,8 @@ Debug messages can be turned on with:
 export NAVI_DEBUG=true
 ```
 
+and be read with `:messages`.
+
 ## FAQ
 
 - Where can I get an OpenAI token?
