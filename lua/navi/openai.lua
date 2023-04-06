@@ -35,6 +35,10 @@ function M.request(messages, callback)
                 vim.schedule(function()
                     local data = vim.fn.json_decode(response.body)
 
+                    if vim.env.NAVI_DEBUG == "true" then
+                        print(vim.inspect(data))
+                    end
+
                     callback(data.choices[1].message.content)
                 end)
             else

@@ -18,8 +18,8 @@ function table_count(t)
 end
 
 function M.cleanResponse(response)
-    local splitResponse = M.string_split(response, "\n")
-    local unpackedResponse = {unpack(splitResponse, 2, M.table_count(splitResponse) - 1)}
+    local splitResponse = string_split(response, "\n")
+    local unpackedResponse = {unpack(splitResponse, 2, table_count(splitResponse) - 1)}
 
     if vim.env.NAVI_DEBUG == "true" then
         print(vim.inspect(splitResponse))
