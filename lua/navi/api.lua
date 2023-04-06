@@ -2,7 +2,7 @@ local api = vim.api
 local prompt = require("navi.prompt")
 local openai = require("navi.openai")
 local utils = require("navi.utils")
-local instructions = require("navi.instructions")
+local conversation = require("navi.conversation")
 
 local M = {}
 
@@ -11,7 +11,9 @@ function M.request_without_context()
     local row, col = unpack(api.nvim_win_get_cursor(0))
 
     prompt.open(function(content)
-        openai.request(content, function(response)
+        conversation.push(content)
+
+        openai.request(conversation.messages, function(response)
             if response == "\"\"" then
                 return
             end
@@ -50,9 +52,9 @@ function M.request_with_context(buf, start_position, end_position)
     end
 
     prompt.open(function(content)
-        local enriched_content = instructions.enrichSelection(code, content)
+        conversation.pushWithContext(code, content)
 
-        openai.request(enriched_content, function(response)
+        openai.request(conversation.messages, function(response)
             if response == "\"\"" then
                 return
             end

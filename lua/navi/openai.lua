@@ -1,18 +1,12 @@
 local http = require("http")
-local instructions = require("navi.instructions")
 
 local M = {}
 
-function M.request(prompt, callback)
+function M.request(messages, callback)
     if vim.env.OPENAI_TOKEN == nil then
         print("Please set the OPENAI_TOKEN environment variable")
         return
     end
-
-    local messages = {
-        { role = "system", content = instructions.prefix },
-        { role = "user", content =  prompt }
-    }
 
     if vim.env.NAVI_DEBUG == "true" then
         print(vim.fn.json_encode(messages))
