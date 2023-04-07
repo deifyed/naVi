@@ -4,9 +4,11 @@ Your NeoVim assistant.
 
 ## Usage
 
-`<C-n>` will open a prompt. Use this prompt to tell naVi what to do. For example, insert a React component outline.
+`<C-n>` in insert mode will open a prompt. Use this prompt to tell naVi what to do. For example, insert a React 
+component outline.
 
-Select text and press `<C-n>` to prompt naVi to make changes to the selected text. For example, remove a bug.
+Select text and press in visual mode `<C-n>` to prompt naVi to make changes to the selected text. For example, remove a
+bug.
 
 ## Installation
 
