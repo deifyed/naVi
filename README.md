@@ -30,30 +30,23 @@ Add the following to your Packer config
 
 ## Configuration
 
-### Configure keybindings
-
 in `~/.config/nvim/after/plugin/naVi.lua`:
 
-```
+```lua
 local navi = require('navi')
 
+navi.setup({
+    openai_token = "<token>", -- Or use the environment variable OPENAI_TOKEN
+    openai_model = "gpt-3.5-turbo",
+    openai_max_tokens = 512,
+    openai_temperature = 0.6,
+    debug = false, -- Print debug messages. View with :messages. Can also be set with the environment variable NAVI_DEBUG
+})
+
+-- Set keybindings
 vim.api.nvim_set_keymap('v', '<C-PageDown>', '', { callback = navi.openRange })
 vim.api.nvim_set_keymap('i', '<C-PageDown>', '', { callback = navi.open })
 ```
-
-### Configure OpenAI token
-
-```bash
-export OPENAI_TOKEN=<token>
-```
-
-### Print debug messages
-
-```bash
-export NAVI_DEBUG=true
-```
-
-and be read with `:messages`.
 
 ## FAQ
 

@@ -17,11 +17,11 @@ function table_count(t)
         return count
 end
 
-function M.cleanResponse(response)
+function M.cleanResponse(cfg, response)
     local splitResponse = string_split(response, "\n")
     local unpackedResponse = {unpack(splitResponse, 2, table_count(splitResponse) - 1)}
 
-    if vim.env.NAVI_DEBUG == "true" then
+    if cfg.debug then
         print(vim.inspect(splitResponse))
         print(vim.inspect(unpackedResponse))
     end
