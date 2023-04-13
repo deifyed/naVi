@@ -30,13 +30,24 @@ Add the following to your Packer config
 
 ## Configuration
 
-Configure your OpenAI token like this:
+### Configure keybindings
+
+in `~/.config/nvim/after/plugin/naVi.lua`:
+
+```
+local navi = require('navi')
+
+vim.api.nvim_set_keymap('v', '<C-PageDown>', '', { callback = navi.openRange })
+vim.api.nvim_set_keymap('i', '<C-PageDown>', '', { callback = navi.open })
+```
+
+### Configure OpenAI token
 
 ```bash
 export OPENAI_TOKEN=<token>
 ```
 
-Debug messages can be turned on with:
+### Print debug messages
 
 ```bash
 export NAVI_DEBUG=true
@@ -48,7 +59,5 @@ and be read with `:messages`.
 
 - Where can I get an OpenAI token?
     > https://platform.openai.com/
-- I'm already using the `<C-n>` keybinding. How can I change it?
-    > You can't yet. I'm new to Lua and the NeoVim API. Getting there though.
 - Can naVi close nVim for me?
-    > AI has come far, but not that far.
+    > AI has come far, but not that far. We'll have to wait for human alignment before attempting this.

@@ -8,6 +8,3 @@ exe "lua package.path = package.path .. ';" . s:navi_deps_dir . "/lua-?/init.lua
 
 command! -range -nargs=0 NaviOpenRange lua require("navi").openRange()
 command! -nargs=0 NaviOpen lua require("navi").open()
-
-imap <C-n> <ESC>:NaviOpen<CR>
-vmap <C-n> <ESC>:NaviOpenRange<CR>
