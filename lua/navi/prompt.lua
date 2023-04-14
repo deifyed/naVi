@@ -17,6 +17,7 @@ function M.open(callback)
     })
 
     api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+    -- Get prompt content on every line change, and call the callback when the prompt is closed
     api.nvim_buf_attach(buf, true, {
         on_lines = function()
             content = api.nvim_buf_get_lines(buf, 0, api.nvim_buf_line_count(buf), true)
@@ -53,7 +54,13 @@ function M.open(callback)
 
     win = api.nvim_open_win(buf, true, opts)
 
-    api.nvim_buf_set_keymap(buf, "i", "<CR>", "", {callback = function() api.nvim_win_close(win, false) end})
+    -- Submit prompt on <CR> aka enter and close the window
+    api.nvim_buf_set_keymap(buf, "i", "<CR>", "", {
+        callback = function()
+            api.nvim_win_close(win, false)
+        end,
+    })
+    -- Cancel the prompt on <ESC> and close the window
     api.nvim_buf_set_keymap(buf, "i", "<ESC>", "", {
         callback = function()
             canceled = true
