@@ -28,7 +28,10 @@ end
 
 function M.request_with_context(cfg, buf, start_position, end_position)
     local from_row = unpack(start_position)
-    from_row = from_row - 1
+    if from_row > 0 then
+        from_row = from_row - 1
+    end
+
     local to_row = unpack(end_position)
 
     log.d(vim.inspect({
