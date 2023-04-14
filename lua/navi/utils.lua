@@ -2,7 +2,7 @@ local log = require("navi.log")
 
 local M = {}
 
-local codeblock_delimiter = "```"
+local codeblock_delimiter_prefix = "^```"
 
 function string_split(inputstr, sep)
         if sep == nil then
@@ -20,7 +20,7 @@ function get_codeblock_indices(lines)
     local stop = -1
 
     for i, line in ipairs(lines) do
-        if line == codeblock_delimiter then
+        if line:find(codeblock_delimiter_prefix) ~= nil then
             if start == -1 then 
                 start = i + 1
             else 
