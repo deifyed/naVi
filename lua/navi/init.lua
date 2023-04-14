@@ -1,3 +1,4 @@
+local log = require('navi.log')
 local napi = require('navi.api')
 local api = vim.api
 
@@ -11,6 +12,8 @@ local M = {
     }
 }
 
+log.setup(M.config)
+
 function get_visual_selection(buf)
     local start_position = api.nvim_buf_get_mark(buf, "<")
     local end_position = api.nvim_buf_get_mark(buf, ">")
@@ -19,10 +22,9 @@ function get_visual_selection(buf)
 end
 
 function M.openRange()
-    if M.config.debug then
-        print("Opening navi.request_with_context()")
-        print(vim.inspect(start_position), vim.inspect(end_position))
-    end
+    log.d("Opening navi.request_with_context()")
+    log.d("Start position: " .. vim.inspect(start_position))
+    log.d("End position: " .. vim.inspect(end_position))
 
     local buf = api.nvim_get_current_buf()
     local start_position, end_position = get_visual_selection(buf)
@@ -31,9 +33,7 @@ function M.openRange()
 end
 
 function M.open()
-    if M.config.debug == "true" then
-        print("Opening navi.request_without_context()")
-    end
+    log.d("Opening navi.request_without_context()")
 
     napi.request_without_context(M.config)
 end
@@ -42,6 +42,8 @@ function M.setup(opts)
     for k,v in pairs(opts) do
         M.config[k] = v
     end
+
+    log.setup(M.config)
 end
 
 return M

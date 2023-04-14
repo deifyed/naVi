@@ -1,4 +1,5 @@
 local api = vim.api
+local log = require("navi.log")
 local prompt = require("navi.prompt")
 local openai = require("navi.openai")
 local utils = require("navi.utils")
@@ -30,20 +31,18 @@ function M.request_with_context(cfg, buf, start_position, end_position)
     from_row = from_row - 1
     local to_row = unpack(end_position)
 
-    if cfg.debug then
-        print("buf: " .. buf)
-        print("start_position: " .. vim.inspect(start_position))
-        print("end_position: " .. vim.inspect(end_position))
-        print("from_row: " .. from_row)
-        print("to_row: " .. to_row)
-    end
+    log.d(vim.inspect({
+        buf = buf,
+        start_position = start_position,
+        end_position = end_position,
+        from_row = from_row,
+        to_row = to_row,
+    }))
 
     local lines = api.nvim_buf_get_lines(buf, from_row, to_row, false)
     local code = table.concat(lines, "\n")
 
-    if cfg.debug == "true" then
-        print("code: " .. code)
-    end
+    log.d("code: " .. code)
 
     prompt.open(function(content)
         conversation.pushWithContext(code, content)
@@ -53,9 +52,11 @@ function M.request_with_context(cfg, buf, start_position, end_position)
                 return
             end
 
-            conversation.pushResponse(response)
+            local cleanResponse = utils.cleanResponse(cfg, response)
 
-            api.nvim_buf_set_lines(buf, from_row, to_row, false, utils.cleanResponse(cfg, response))
+            conversation.pushResponse(cleanResponse)
+
+            api.nvim_buf_set_lines(buf, from_row, to_row, false, cleanResponse)
         end)
     end)
 end

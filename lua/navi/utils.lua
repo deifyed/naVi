@@ -1,3 +1,5 @@
+local log = require("navi.log")
+
 local M = {}
 
 function string_split(inputstr, sep)

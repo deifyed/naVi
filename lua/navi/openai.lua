@@ -1,4 +1,5 @@
 local http = require("http")
+local log = require("navi.log")
 
 local M = {}
 
@@ -6,13 +7,12 @@ function M.request(cfg, messages, callback)
     local token = vim.env.OPENAI_TOKEN or cfg.openai_token
 
     if token == '' then
-        print("Missing OpenAI token. Please set the environment variable OPENAI_TOKEN or set the openai_token option in your config.")
+        log.e("Missing OpenAI token. Please set the environment variable OPENAI_TOKEN or set the openai_token option in your config.")
+
         return
     end
 
-    if cfg.debug then
-        print(vim.fn.json_encode(messages))
-    end
+    log.d(vim.fn.json_encode(messages))
 
     http.request({
         http.methods.POST,
@@ -29,7 +29,8 @@ function M.request(cfg, messages, callback)
         },
         callback = function(err, response)
             if err then
-                print(err)
+                log.e(err)
+
                 return
             end
 
@@ -37,14 +38,12 @@ function M.request(cfg, messages, callback)
                 vim.schedule(function()
                     local data = vim.fn.json_decode(response.body)
 
-                    if cfg.debug then
-                        print(vim.inspect(data))
-                    end
+                    log.d(vim.inspect(data))
 
                     callback(data.choices[1].message.content)
                 end)
             else
-                print(response.status)
+                log.d(response.status)
             end
         end
     })
