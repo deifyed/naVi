@@ -30,17 +30,22 @@ Add the following to your Packer config
 
 ## Configuration
 
-in `~/.config/nvim/after/plugin/naVi.lua`:
+in `~/.config/nvim/after/plugin/navi.lua`:
 
 ```lua
 local navi = require('navi')
 
 navi.setup({
-    openai_token = "<token>", -- Or use the environment variable OPENAI_TOKEN
+    -- OpenAI token. Required
+    openai_token = "<token>", -- Alternatively, use environment variable OPENAI_TOKEN=<token>
+    -- OpenAI model. Optional. Default is gpt-3.5-turbo
     openai_model = "gpt-3.5-turbo",
+    -- OpenAI max tokens. Optional. Default is 512
     openai_max_tokens = 512,
+    -- OpenAI temperature. Optional. Default is 0.6
     openai_temperature = 0.6,
-    debug = false, -- Print debug messages. View with :messages. Can also be set with the environment variable NAVI_DEBUG
+    -- Debug mode. Optional. Default is false
+    debug = false, -- Alternatively, use environment variable NAVI_DEBUG=true
 })
 
 -- Set keybindings
