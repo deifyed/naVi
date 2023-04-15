@@ -42,7 +42,7 @@ function M.request_with_context(cfg, buf, from_row, to_row)
     local lines = api.nvim_buf_get_lines(buf, from_row, to_row, false)
     local code = table.concat(lines, "\n")
 
-    log.d("code: " .. code)
+    log.d(vim.inspect({ code = code }))
 
     prompt.open(function(content)
         conversation.pushWithContext(code, content)
@@ -54,7 +54,7 @@ function M.request_with_context(cfg, buf, from_row, to_row)
 
             local cleanResponse = utils.cleanResponse(cfg, response)
 
-            conversation.pushResponse(cleanResponse)
+            conversation.pushResponse(table.concat(cleanResponse, "\n"))
 
             api.nvim_buf_set_lines(buf, from_row, to_row, false, cleanResponse)
         end)
