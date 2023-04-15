@@ -12,6 +12,7 @@ function M.open(callback)
     api.nvim_create_autocmd({"BufEnter"}, {
         buffer = buf,
         callback = function()
+            api.nvim_command("stopinsert")
             api.nvim_feedkeys("i", "n", true)
         end
     })
