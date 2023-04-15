@@ -59,6 +59,7 @@ function M.open(callback)
     api.nvim_buf_set_keymap(buf, "i", "<CR>", "", {
         callback = function()
             api.nvim_win_close(win, false)
+            api.nvim_command("stopinsert")
         end,
     })
     -- Cancel the prompt on <ESC> and close the window
@@ -67,6 +68,7 @@ function M.open(callback)
             canceled = true
 
             api.nvim_win_close(win, false)
+            api.nvim_command("stopinsert")
         end,
     })
 end
