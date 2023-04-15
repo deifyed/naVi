@@ -43,7 +43,7 @@ function M.request(cfg, messages, callback)
                     callback(data.choices[1].message.content)
                 end)
             else
-                log.d(response.status)
+                log.d(vim.inspect(response))
             end
         end
     })
