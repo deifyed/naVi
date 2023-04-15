@@ -29,6 +29,11 @@ function get_codeblock_indices(lines)
         end
     end
 
+    if start == -1 and stop == -1 then
+        start = 1
+        stop = tableLength(lines)
+    end
+
     return start, stop
 end
 

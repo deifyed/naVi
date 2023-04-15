@@ -3,7 +3,7 @@ local M = {}
 M.messages = {
     { role = "system", content = table.concat({
         "You are an assistant made for the purpose of helping writing " .. vim.bo.filetype .. " code.",
-        "- Respond with your answers in markdown (```).",
+        "- Always respond with your answers in codeblocks (```).",
         "- Do not provide explanations or comments.",
         "- Preserve indentation.",
         "\n",
