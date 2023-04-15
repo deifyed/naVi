@@ -50,16 +50,20 @@ function M.cleanResponse(cfg, response)
     local splitResponse = stringSplit(response, "\n")
     local start, stop = getCodeblockIndices(splitResponse)
 
-    log.d("start: " .. start)
-    log.d("stop: " .. stop)
+    log.d(vim.inspect({
+        splitResponse = splitResponse,
+        start = start,
+        stop = stop
+    }))
 
-    if cfg.debug and start == stop then
-        return {"error: no code block found. see :messages for more info"}
+    if start == -1 or stop == -1 then
+        log.d("Start or stop index was -1, returning empty table")
+
+        return {""}
     end
 
     local unpackedResponse = {unpack(splitResponse, start, stop)}
 
-    log.d(vim.inspect(splitResponse))
     log.d(vim.inspect(unpackedResponse))
 
     return unpackedResponse
