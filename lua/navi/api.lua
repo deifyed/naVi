@@ -8,8 +8,9 @@ local conversation = require("navi.conversation")
 local M = {}
 
 function M.request_without_context(cfg)
-    local current_buffer = api.nvim_win_get_buf(0)
-    local row, col = unpack(api.nvim_win_get_cursor(current_buffer))
+    local current_window = api.nvim_get_current_win()
+    local current_buffer = api.nvim_win_get_buf(current_window)
+    local row, col = unpack(api.nvim_win_get_cursor(current_window))
 
     prompt.open(function(content)
         conversation.push(content)
