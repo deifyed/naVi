@@ -3,9 +3,8 @@ local M = {}
 M.messages = {
     { role = "system", content = table.concat({
         "You are an assistant made for the purpose of helping writing " .. vim.bo.filetype .. " code.",
-        "- Always respond with your answers in codeblocks (```).",
+        "- Always respond with your suggestions surrounded by codeblocks (```).",
         "- Do not provide explanations or comments.",
-        "- Preserve indentation.",
         "\n",
         "Example:\n",
         "user: scaffold a function style react component called 'Header'",
@@ -24,6 +23,8 @@ M.messages = {
         "```",
         "\n",
         "\n",
+        "user: Consider the following code: ```\t<title>Title</title>```\nthe title should be \"Hello world\"",
+        "assistant: ```\t<title>Hello world</title>```",
     }, "\n") },
 }
 
@@ -37,8 +38,15 @@ function M.push(content)
 end
 
 function M.pushWithContext(context, content)
-    M.push("Consider the following code only:```\n" .. context .. "```")
-    M.push(content)
+    M.push(table.concat({
+        "Consider the following code:",
+        "```" .. context .. "```",
+        content,
+        "\n\nRemember:",
+        "- Your suggestion will replace the provided code.",
+        "- Your reply should contain identical code indentation.",
+        "- Suggest only changes within the scope of the provided code. The user will provide surrounding code.",
+    }, "\n"))
 end
 
 function M.pushResponse(content)
