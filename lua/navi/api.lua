@@ -9,7 +9,7 @@ local M = {}
 
 function M.request_without_context(cfg)
     local current_buffer = api.nvim_win_get_buf(0)
-    local row, col = unpack(api.nvim_win_get_cursor(0))
+    local row, col = unpack(api.nvim_win_get_cursor(current_buffer))
 
     prompt.open(function(content)
         conversation.push(content)
