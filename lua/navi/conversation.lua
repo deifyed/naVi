@@ -45,7 +45,7 @@ function M.pushWithContext(context, content)
         "\n\nRemember:",
         "- Your suggestion will replace the provided code.",
         "- Your reply should contain identical code indentation.",
-        "- Suggest only changes within the scope of the provided code. The user will provide surrounding code.",
+        "- Suggest only changes within the scope of the provided code. I will provide surrounding code.",
     }, "\n"))
 end
 
