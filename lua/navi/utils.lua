@@ -4,18 +4,27 @@ local M = {}
 
 local codeblock_delimiter_prefix = "^```"
 
-function string_split(inputstr, sep)
-        if sep == nil then
-                sep = "%s"
-        end
-        local t={}
-        for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-                table.insert(t, str)
-        end
-        return t
+function stringSplit(inputstr, sep)
+    if sep == nil then
+            sep = "%s"
+    end
+
+    local t={}
+    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+            table.insert(t, str)
+    end
+
+    return t
 end
 
-function get_codeblock_indices(lines)
+function tableLength(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+
+    return count
+end
+
+function getCodeblockIndices(lines)
     local start = -1
     local stop = -1
 
@@ -38,8 +47,8 @@ function get_codeblock_indices(lines)
 end
 
 function M.cleanResponse(cfg, response)
-    local splitResponse = string_split(response, "\n")
-    local start, stop = get_codeblock_indices(splitResponse)
+    local splitResponse = stringSplit(response, "\n")
+    local start, stop = getCodeblockIndices(splitResponse)
 
     log.d("start: " .. start)
     log.d("stop: " .. stop)
