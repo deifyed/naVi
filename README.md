@@ -1,6 +1,10 @@
-# naVi
+# naVi - Your NeoVim assistant
 
-Your NeoVim assistant.
+<p align="center">
+    <b>Natural language first based development</b>
+    <br /><br />
+    <img src="./assets/logo.png" />
+</p>
 
 ## Usage
 
