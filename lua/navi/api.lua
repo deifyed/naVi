@@ -54,6 +54,7 @@ function M.request_with_context(cfg, buf, from_row, to_row)
             end
 
             local cleanResponse = utils.cleanResponse(cfg, response)
+            log.d(vim.inspect({ cleanResponse = cleanResponse }))
 
             conversation.pushResponse(table.concat(cleanResponse, "\n"))
 

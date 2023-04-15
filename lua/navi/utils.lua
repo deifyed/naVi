@@ -51,12 +51,19 @@ function M.cleanResponse(cfg, response)
     local start, stop = getCodeblockIndices(splitResponse)
 
     log.d(vim.inspect({
+        response = response,
         splitResponse = splitResponse,
         start = start,
         stop = stop
     }))
 
-    if start == -1 or stop == -1 then
+    if start ~= -1 and stop == -1 then -- Found a codeblock start, but no end. Probably a single line response.
+        local cleanLine = splitResponse[1]:gsub("`", "")
+
+        return { cleanLine, }
+    end
+
+    if start == -1 or stop == -1 then -- No codeblocks found. GPT got confused.
         log.d("Start or stop index was -1, returning empty table")
 
         return {""}
