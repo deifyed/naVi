@@ -14,6 +14,8 @@ match the general direction of the project. See the [roadmap](./README.md#roadma
 
 - Use [stylua](https://github.com/JohnnyMorganz/StyLua) for formatting. This can be simplified by installing
     [pre-commit](https://pre-commit.com/) and running `pre-commit install` in the root of the project.
+- Use [luacheck](https://github.com/mpeterv/luacheck) for linting. Install it with [luarocks](https://luarocks.org/)
+    and run `luacheck .` in the root of the project.
 - Prefix commit messages with ✅ for new features, 🐛 for bug fixes, and 👌 for anything else.
 
 ## My workflow (not necessarily the best one)
