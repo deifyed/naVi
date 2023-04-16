@@ -3,21 +3,21 @@ local api = vim.api
 local M = {}
 
 -- Opens a prompt window and calls the callback with the content of the prompt
-function M.open(callback)
+function M.open(cfg, callback)
     local buf = api.nvim_create_buf(false, true)
     local content = {}
     local canceled = false
 
     -- Automatically enter insert mode upon opening prompt
-    api.nvim_create_autocmd({"BufEnter"}, {
+    api.nvim_create_autocmd({ "BufEnter" }, {
         buffer = buf,
         callback = function()
             api.nvim_command("stopinsert")
             api.nvim_feedkeys("i", "n", true)
-        end
+        end,
     })
 
-    api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+    api.nvim_buf_set_option(buf, "bufhidden", "wipe")
     -- Get prompt content on every line change, and call the callback when the prompt is closed
     api.nvim_buf_attach(buf, true, {
         on_lines = function()
@@ -42,18 +42,19 @@ function M.open(callback)
 
     local row = math.ceil((height - win_height) / 2 - 1)
     local col = math.ceil((width - win_width) / 2)
-    
+
     local opts = {
-        style = "minimal",
-        border = "single",
-        relative = "editor",
+        style = cfg.window.style,
+        border = cfg.window.border,
+        relative = cfg.window.relative,
         width = win_width,
         height = win_height,
         row = row,
-        col = col
+        col = col,
+        title = " OpenAI prompt ",
     }
 
-    win = api.nvim_open_win(buf, true, opts)
+    local win = api.nvim_open_win(buf, true, opts)
 
     -- Submit prompt on <CR> aka enter and close the window
     api.nvim_buf_set_keymap(buf, "i", "<CR>", "", {

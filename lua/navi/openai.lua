@@ -6,8 +6,10 @@ local M = {}
 function M.request(cfg, messages, callback)
     local token = vim.env.OPENAI_TOKEN or cfg.openai_token
 
-    if token == '' then
-        log.e("Missing OpenAI token. Please set the environment variable OPENAI_TOKEN or set the openai_token option in your config.")
+    if token == "" then
+        log.e(
+            "Missing OpenAI token. Please set the environment variable OPENAI_TOKEN or set the openai_token option in your config."
+        )
 
         return
     end
@@ -25,12 +27,11 @@ function M.request(cfg, messages, callback)
         }),
         headers = {
             ["Authorization"] = "Bearer " .. token,
-            ["Content-Type"] = "application/json"
+            ["Content-Type"] = "application/json",
         },
         callback = function(err, response)
             if err then
                 log.e(err)
-
                 return
             end
 
@@ -39,13 +40,14 @@ function M.request(cfg, messages, callback)
                     local data = vim.fn.json_decode(response.body)
 
                     log.d(vim.inspect(data))
-
-                    callback(data.choices[1].message.content)
+                    if data then
+                        callback(data.choices[1].message.content)
+                    end
                 end)
             else
                 log.d(vim.inspect(response))
             end
-        end
+        end,
     })
 end
 

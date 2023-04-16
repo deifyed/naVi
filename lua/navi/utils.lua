@@ -4,35 +4,37 @@ local M = {}
 
 local codeblock_delimiter_prefix = "^```"
 
-function stringSplit(inputstr, sep)
+local function stringSplit(inputstr, sep)
     if sep == nil then
-            sep = "%s"
+        sep = "%s"
     end
 
-    local t={}
-    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-            table.insert(t, str)
+    local t = {}
+    for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+        table.insert(t, str)
     end
 
     return t
 end
 
-function tableLength(T)
+local function tableLength(T)
     local count = 0
-    for _ in pairs(T) do count = count + 1 end
+    for _ in pairs(T) do
+        count = count + 1
+    end
 
     return count
 end
 
-function getCodeblockIndices(lines)
+local function getCodeblockIndices(lines)
     local start = -1
     local stop = -1
 
     for i, line in ipairs(lines) do
         if line:find(codeblock_delimiter_prefix) ~= nil then
-            if start == -1 then 
+            if start == -1 then
                 start = i + 1
-            else 
+            else
                 stop = i - 1
             end
         end
@@ -54,27 +56,26 @@ function M.cleanResponse(cfg, response)
         response = response,
         splitResponse = splitResponse,
         start = start,
-        stop = stop
+        stop = stop,
     }))
 
     if start ~= -1 and stop == -1 then -- Found a codeblock start, but no end. Probably a single line response.
         local cleanLine = splitResponse[1]:gsub("`", "")
 
-        return { cleanLine, }
+        return { cleanLine }
     end
 
     if start == -1 or stop == -1 then -- No codeblocks found. GPT got confused.
         log.d("Start or stop index was -1, returning empty table")
 
-        return {""}
+        return { "" }
     end
 
-    local unpackedResponse = {unpack(splitResponse, start, stop)}
+    local unpackedResponse = { unpack(splitResponse, start, stop) }
 
     log.d(vim.inspect(unpackedResponse))
 
     return unpackedResponse
 end
-
 
 return M

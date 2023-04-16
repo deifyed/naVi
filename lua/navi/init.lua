@@ -1,7 +1,7 @@
 local api = vim.api
-local log = require('navi.log')
-local buffer = require('navi.buffer')
-local napi = require('navi.api')
+local log = require("navi.log")
+local buffer = require("navi.buffer")
+local napi = require("navi.api")
 
 local M = {
     config = {
@@ -10,7 +10,12 @@ local M = {
         openai_model = "gpt-3.5-turbo",
         openai_max_tokens = 512,
         openai_temperature = 0.6,
-    }
+        window = {
+            border = "single",
+            style = "minimal",
+            relative = "editor",
+        },
+    },
 }
 
 log.setup(M.config)
@@ -26,7 +31,7 @@ function M.openRange()
         start_position = start_position,
         end_position = end_position,
     }))
-    
+
     napi.request_with_context(M.config, buf, start_position, end_position)
 end
 
@@ -37,7 +42,7 @@ function M.open()
 end
 
 function M.setup(opts)
-    for k,v in pairs(opts) do
+    for k, v in pairs(opts) do
         M.config[k] = v
     end
 

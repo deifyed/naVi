@@ -12,11 +12,11 @@ function M.request_without_context(cfg)
     local current_buffer = api.nvim_win_get_buf(current_window)
     local row, col = unpack(api.nvim_win_get_cursor(current_window))
 
-    prompt.open(function(content)
+    prompt.open(cfg, function(content)
         conversation.push(content)
 
         openai.request(cfg, conversation.messages, function(response)
-            if response == "\"\"" then
+            if response == '""' then
                 return
             end
 
@@ -34,8 +34,8 @@ function M.request_with_context(cfg, buf, from_row, to_row)
 
     log.d(vim.inspect({
         buf = buf,
-        start_position = start_position,
-        end_position = end_position,
+        -- start_position = start_position,
+        -- end_position = end_position,
         from_row = from_row,
         to_row = to_row,
     }))
@@ -45,11 +45,11 @@ function M.request_with_context(cfg, buf, from_row, to_row)
 
     log.d(vim.inspect({ code = code }))
 
-    prompt.open(function(content)
+    prompt.open(cfg, function(content)
         conversation.pushWithContext(code, content)
 
         openai.request(cfg, conversation.messages, function(response)
-            if response == "\"\"" then
+            if response == '""' then
                 return
             end
 
