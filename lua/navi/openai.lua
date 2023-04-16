@@ -9,7 +9,6 @@ function M.request(cfg, messages, callback)
     if token == "" then
         log.e("Missing OpenAI token. Please set the environment variable OPENAI_TOKEN")
         log.e("or set the openai_token option in your config.")
-
         return
     end
 
