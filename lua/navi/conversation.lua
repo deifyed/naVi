@@ -1,7 +1,7 @@
 local M = {}
 
 M.messages = {
-    {
+    prompt = {
         role = "system",
         content = table.concat({
             "You are an assistant made for the purpose of helping writing " .. vim.bo.filetype .. " code.",
@@ -29,36 +29,60 @@ M.messages = {
             "assistant: ```\t<title>Hello world</title>```",
         }, "\n"),
     },
+    review = {
+        role = "system",
+        content = table.concat({
+            "You are an assistant made for the purpose of reviewing " .. vim.bo.filetype .. " code.",
+            "\n\nYour review should contain:",
+            "- Your suggestions for improvements",
+            "- Your verdict of what parts that is good or bad",
+            "- Provide line numbers",
+            "- End with a general verdict as a short summary",
+        }, "\n"),
+    },
 }
 
-function M.push(content)
+function M.push(list, content)
     local msg = {
         role = "user",
         content = content,
     }
 
-    table.insert(M.messages, msg)
+    table.insert(list, msg)
 end
 
-function M.pushWithContext(context, content)
-    M.push(table.concat({
-        "Consider the following code:",
-        "```" .. context .. "```",
-        content,
-        "\n\nRemember:",
-        "- Your suggestion will replace the provided code.",
-        "- Your reply should contain identical code indentation.",
-        "- Suggest only changes within the scope of the provided code. I will provide surrounding code.",
-    }, "\n"))
+function M.pushForReview(list, context)
+    M.push(
+        list,
+        table.concat({
+            "Review the following code:",
+            "```" .. context .. "```",
+        }, "\n")
+    )
 end
 
-function M.pushResponse(content)
+function M.pushWithContext(list, context, content)
+    M.push(
+        list,
+        table.concat({
+            "Consider the following code:",
+            "```" .. context .. "```",
+            content,
+            "\n\nRemember:",
+            "- Your suggestion will replace the provided code.",
+            "- Your reply should contain identical code indentation.",
+            "- Suggest only changes within the scope of the provided code. I will provide surrounding code.",
+        }, "\n")
+    )
+end
+
+function M.pushResponse(list, content)
     local msg = {
         role = "assistant",
         content = content,
     }
 
-    table.insert(M.messages, msg)
+    table.insert(list, msg)
 end
 
 return M
