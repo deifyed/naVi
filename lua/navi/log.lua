@@ -4,6 +4,7 @@
 -- log_level = 3: log errors, warnings, and info
 -- log_level = 4: log errors, warnings, info, and debug
 -- log_level = 5: log everything
+
 local M = { log_level = 0 }
 
 function M.debug(msg)
