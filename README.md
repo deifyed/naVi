@@ -63,6 +63,7 @@ vim.api.nvim_set_keymap('i', '<C-PageDown>', '', { callback = navi.open })
 
 - Add review functionality
 - Add explain functionality
+- Add a chatbot mode for discussing code
 
 ## FAQ
 
