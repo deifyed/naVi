@@ -56,9 +56,17 @@ vim.api.nvim_set_keymap('v', '<C-PageDown>', '', { callback = navi.openRange })
 vim.api.nvim_set_keymap('i', '<C-PageDown>', '', { callback = navi.open })
 ```
 
+## Roadmap
+
+- Add review functionality
+- Add explain functionality
+- Add use whole buffer as context for prompt
+
 ## FAQ
 
 - Where can I get an OpenAI token?
     > https://platform.openai.com/
 - Can naVi close nVim for me?
     > AI has come far, but not that far. We'll have to wait for human alignment before attempting this.
+- Neat! How can I contribute?
+    > Great! Check out the [contributing guide](./CONTRIBUTING.md) for more information.
