@@ -24,7 +24,7 @@ function M.openRange()
     log.d("Opening navi.request_with_context()")
 
     local buf = api.nvim_get_current_buf()
-    local start_position, end_position = buffer.GetSelection(buf)
+    local start_position, end_position = buffer.GetSelection()
 
     log.d(vim.inspect({
         buf = buf,

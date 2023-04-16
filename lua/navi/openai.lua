@@ -7,9 +7,8 @@ function M.request(cfg, messages, callback)
     local token = vim.env.OPENAI_TOKEN or cfg.openai_token
 
     if token == "" then
-        log.e(
-            "Missing OpenAI token. Please set the environment variable OPENAI_TOKEN or set the openai_token option in your config."
-        )
+        log.e("Missing OpenAI token. Please set the environment variable OPENAI_TOKEN")
+        log.e("or set the openai_token option in your config.")
 
         return
     end

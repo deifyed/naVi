@@ -1,8 +1,6 @@
-local api = vim.api
-
 local M = {}
 
-function M.GetSelection(buf)
+function M.GetSelection()
     local start_row = vim.fn.getpos("v")[2]
     local end_row = vim.fn.getcurpos()[2]
 

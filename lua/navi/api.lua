@@ -10,7 +10,7 @@ local M = {}
 function M.request_without_context(cfg)
     local current_window = api.nvim_get_current_win()
     local current_buffer = api.nvim_win_get_buf(current_window)
-    local row, col = unpack(api.nvim_win_get_cursor(current_window))
+    local row = unpack(api.nvim_win_get_cursor(current_window))
 
     prompt.open(cfg, function(content)
         conversation.push(content)
@@ -22,7 +22,7 @@ function M.request_without_context(cfg)
 
             conversation.pushResponse(response)
 
-            api.nvim_buf_set_lines(current_buffer, row - 1, row - 1, false, utils.cleanResponse(cfg, response))
+            api.nvim_buf_set_lines(current_buffer, row - 1, row - 1, false, utils.cleanResponse(response))
         end)
     end)
 end
@@ -53,7 +53,7 @@ function M.request_with_context(cfg, buf, from_row, to_row)
                 return
             end
 
-            local cleanResponse = utils.cleanResponse(cfg, response)
+            local cleanResponse = utils.cleanResponse(response)
             log.d(vim.inspect({ cleanResponse = cleanResponse }))
 
             conversation.pushResponse(table.concat(cleanResponse, "\n"))
