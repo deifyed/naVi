@@ -3,3 +3,11 @@ repos:
   rev: v0.17.1
   hooks:
     - id: stylua # or stylua-system / stylua-github
+- repo: local # Requires [luacheck](https://github.com/mpeterv/luacheck) to be installed locally for now
+  hooks:
+    - id: luacheck
+      name: Luacheck
+      description: Lints Lua files using Luacheck.
+      entry: luacheck --
+      language: system
+      types: [lua]
