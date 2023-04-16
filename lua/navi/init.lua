@@ -40,7 +40,7 @@ function M.requestReview()
     log.d("Opening navi.request_review()")
 
     local buf = api.nvim_get_current_buf()
-    local start_position, end_position = buffer.GetSelection()
+    local start_position, end_position = buffer.GetSelectedRows()
 
     log.d(vim.inspect({
         buf = buf,
@@ -55,7 +55,7 @@ function M.openRange()
     log.d("Opening navi.request_with_context()")
 
     local buf = api.nvim_get_current_buf()
-    local start_position, end_position = buffer.GetSelection()
+    local start_position, end_position = buffer.GetSelectedRows()
 
     log.d(vim.inspect({
         buf = buf,
