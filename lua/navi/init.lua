@@ -20,6 +20,22 @@ local M = {
 
 log.setup(M.config)
 
+function M.openFile()
+    log.d("Opening navi.request_with_context()")
+
+    local buf = api.nvim_get_current_buf()
+    local start_position = 1
+    local end_position = api.nvim_buf_line_count(buf)
+
+    log.d(vim.inspect({
+        buf = buf,
+        start_position = start_position,
+        end_position = end_position,
+    }))
+
+    napi.request_with_context(M.config, buf, start_position, end_position)
+end
+
 function M.openRange()
     log.d("Opening navi.request_with_context()")
 

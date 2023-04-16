@@ -13,6 +13,9 @@
 `navi.openRange()` will open a prompt using the current selection as context. Use this prompt to get naVi to make
 changes to the selected text. For example, remove a bug.
 
+`navi.openFile()` will open a prompt using the current file as context. Use this prompt to get naVi to make
+changes to the current file. For example, add a new function.
+
 ## Installation
 
 ### Requirements
@@ -60,7 +63,6 @@ vim.api.nvim_set_keymap('i', '<C-PageDown>', '', { callback = navi.open })
 
 - Add review functionality
 - Add explain functionality
-- Add use whole buffer as context for prompt
 
 ## FAQ
 
