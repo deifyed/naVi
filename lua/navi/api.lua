@@ -34,8 +34,6 @@ function M.request_with_context(cfg, buf, from_row, to_row)
 
     log.d(vim.inspect({
         buf = buf,
-        -- start_position = start_position,
-        -- end_position = end_position,
         from_row = from_row,
         to_row = to_row,
     }))
