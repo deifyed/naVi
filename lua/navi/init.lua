@@ -10,7 +10,7 @@ local M = {
         openai_model = "gpt-3.5-turbo",
         openai_max_tokens = 512,
         openai_temperature = 0.6,
-        window = {
+        prompt_window = {
             border = "single",
             style = "minimal",
             relative = "editor",
@@ -34,6 +34,21 @@ function M.openFile()
     }))
 
     napi.request_with_context(M.config, buf, start_position, end_position)
+end
+
+function M.requestReview()
+    log.d("Opening navi.request_review()")
+
+    local buf = api.nvim_get_current_buf()
+    local start_position, end_position = buffer.GetSelection()
+
+    log.d(vim.inspect({
+        buf = buf,
+        start_position = start_position,
+        end_position = end_position,
+    }))
+
+    napi.request_review(M.config, buf, start_position, end_position)
 end
 
 function M.openRange()

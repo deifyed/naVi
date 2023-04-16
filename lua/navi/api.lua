@@ -4,8 +4,26 @@ local prompt = require("navi.prompt")
 local openai = require("navi.openai")
 local utils = require("navi.utils")
 local conversation = require("navi.conversation")
+local buffer = require("navi.buffer")
 
 local M = {}
+
+local function getSelectedLines(buf, from_row, to_row)
+    if from_row > 0 then
+        from_row = from_row - 1
+    end
+
+    log.d(vim.inspect({
+        buf = buf,
+        from_row = from_row,
+        to_row = to_row,
+    }))
+
+    local lines = api.nvim_buf_get_lines(buf, from_row, to_row, false)
+    local code = table.concat(lines, "\n")
+
+    return code
+end
 
 function M.request_without_context(cfg)
     local current_window = api.nvim_get_current_win()
@@ -28,50 +46,29 @@ function M.request_without_context(cfg)
 end
 
 function M.request_review(cfg, buf, from_row, to_row)
-    if from_row > 0 then
-        from_row = from_row - 1
-    end
+    local code = getSelectedLines(buf, from_row, to_row)
 
-    log.d(vim.inspect({
-        buf = buf,
-        from_row = from_row,
-        to_row = to_row,
-    }))
+    log.d(vim.inspect({ code = code }))
 
-    local lines = api.nvim_buf_get_lines(buf, from_row, to_row, false)
-    local code = table.concat(lines, "\n")
+    conversation.pushForReview(conversation.messages.review, code)
 
-    prompt.open(cfg, function()
-        conversation.pushForReview(conversation.messages.review, code)
+    openai.request(cfg, conversation.messages.review, function(response)
+        if response == '""' then
+            return
+        end
 
-        openai.request(cfg, conversation.messages.review, function(response)
-            if response == '""' then
-                return
-            end
+        local cleanResponse = utils.cleanResponse(response)
 
-            local cleanResponse = utils.cleanResponse(response)
-            log.d(vim.inspect({ cleanResponse = cleanResponse }))
+        log.d(vim.inspect({ cleanResponse = cleanResponse }))
 
-            conversation.pushResponse(conversation.messages.review, table.concat(cleanResponse, "\n"))
+        conversation.pushResponse(conversation.messages.review, table.concat(cleanResponse, "\n"))
 
-            api.nvim_buf_set_lines(buf, from_row, to_row, false, cleanResponse)
-        end)
+        buffer.CreateNewBufferWithContent(cleanResponse)
     end)
 end
 
 function M.request_with_context(cfg, buf, from_row, to_row)
-    if from_row > 0 then
-        from_row = from_row - 1
-    end
-
-    log.d(vim.inspect({
-        buf = buf,
-        from_row = from_row,
-        to_row = to_row,
-    }))
-
-    local lines = api.nvim_buf_get_lines(buf, from_row, to_row, false)
-    local code = table.concat(lines, "\n")
+    local code = getSelectedLines(buf, from_row, to_row)
 
     log.d(vim.inspect({ code = code }))
 

@@ -12,8 +12,6 @@ function M.request(cfg, messages, callback)
         return
     end
 
-    log.d(vim.inspect(messages))
-
     log.d(vim.fn.json_encode(messages))
 
     http.request({

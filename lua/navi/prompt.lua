@@ -44,9 +44,9 @@ function M.open(cfg, callback)
     local col = math.ceil((width - win_width) / 2)
 
     local opts = {
-        style = cfg.window.style,
-        border = cfg.window.border,
-        relative = cfg.window.relative,
+        style = cfg.prompt_window.style,
+        border = cfg.prompt_window.border,
+        relative = cfg.prompt_window.relative,
         width = win_width,
         height = win_height,
         row = row,
