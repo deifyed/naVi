@@ -8,23 +8,6 @@ local buffer = require("navi.buffer")
 
 local M = {}
 
-local function getSelectedLines(buf, from_row, to_row)
-    if from_row > 0 then
-        from_row = from_row - 1
-    end
-
-    log.d(vim.inspect({
-        buf = buf,
-        from_row = from_row,
-        to_row = to_row,
-    }))
-
-    local lines = api.nvim_buf_get_lines(buf, from_row, to_row, false)
-    local code = table.concat(lines, "\n")
-
-    return code
-end
-
 function M.request_without_context(cfg)
     local current_window = api.nvim_get_current_win()
     local current_buffer = api.nvim_win_get_buf(current_window)
@@ -46,7 +29,7 @@ function M.request_without_context(cfg)
 end
 
 function M.request_review(cfg, buf, from_row, to_row)
-    local code = getSelectedLines(buf, from_row, to_row)
+    local code = buffer.GetSelectedLines(buf, from_row, to_row)
 
     log.d(vim.inspect({ code = code }))
 
@@ -68,7 +51,7 @@ function M.request_review(cfg, buf, from_row, to_row)
 end
 
 function M.request_with_context(cfg, buf, from_row, to_row)
-    local code = getSelectedLines(buf, from_row, to_row)
+    local code = buffer.GetSelectedLines(buf, from_row, to_row)
 
     log.d(vim.inspect({ code = code }))
 
