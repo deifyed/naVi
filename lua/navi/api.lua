@@ -6,6 +6,24 @@ local utils = require("navi.utils")
 local conversation = require("navi.conversation")
 local buffer = require("navi.buffer")
 
+local function request(cfg, type, content, context, callback)
+    conversation.PushRequest(type, content, context)
+
+    openai.request(cfg, conversation.GetConversation(type)["messages"], function(response)
+        if response == '""' then
+            return
+        end
+
+        local cleanResponse = utils.cleanResponse(response)
+
+        log.d(vim.inspect({ cleanResponse = cleanResponse }))
+
+        conversation.PushResponse(type, table.concat(cleanResponse, "\n"))
+
+        callback(cleanResponse)
+    end)
+end
+
 local M = {}
 
 function M.request_without_context(cfg)
@@ -14,16 +32,8 @@ function M.request_without_context(cfg)
     local row = unpack(api.nvim_win_get_cursor(current_window))
 
     prompt.open(cfg, function(content)
-        conversation.push(conversation.messages.prompt, content)
-
-        openai.request(cfg, conversation.messages.prompt, function(response)
-            if response == '""' then
-                return
-            end
-
-            conversation.pushResponse(conversation.messages.prompt, response)
-
-            api.nvim_buf_set_lines(current_buffer, row - 1, row - 1, false, utils.cleanResponse(response))
+        request(cfg, "prompt", content, nil, function(response)
+            api.nvim_buf_set_lines(current_buffer, row - 1, row - 1, false, response)
         end)
     end)
 end
@@ -33,20 +43,8 @@ function M.request_review(cfg, buf, from_row, to_row)
 
     log.d(vim.inspect({ code = code }))
 
-    conversation.pushForReview(conversation.messages.review, code)
-
-    openai.request(cfg, conversation.messages.review, function(response)
-        if response == '""' then
-            return
-        end
-
-        local cleanResponse = utils.cleanResponse(response)
-
-        log.d(vim.inspect({ cleanResponse = cleanResponse }))
-
-        conversation.pushResponse(conversation.messages.review, table.concat(cleanResponse, "\n"))
-
-        buffer.CreateNewBufferWithContent(cleanResponse)
+    request(cfg, "review", nil, code, function(response)
+        buffer.CreateNewBufferWithContent(response)
     end)
 end
 
@@ -56,19 +54,8 @@ function M.request_with_context(cfg, buf, from_row, to_row)
     log.d(vim.inspect({ code = code }))
 
     prompt.open(cfg, function(content)
-        conversation.pushWithContext(conversation.messages.prompt, code, content)
-
-        openai.request(cfg, conversation.messages.prompt, function(response)
-            if response == '""' then
-                return
-            end
-
-            local cleanResponse = utils.cleanResponse(response)
-            log.d(vim.inspect({ cleanResponse = cleanResponse }))
-
-            conversation.pushResponse(conversation.messages.prompt, table.concat(cleanResponse, "\n"))
-
-            api.nvim_buf_set_lines(buf, from_row, to_row, false, cleanResponse)
+        request(cfg, "promptWithContext", content, code, function(response)
+            api.nvim_buf_set_lines(buf, from_row, to_row, false, response)
         end)
     end)
 end
