@@ -45,7 +45,7 @@ function M.PushRequest(type, content, context)
         ctn = content
     end
 
-    if ctx then
+    if context then
         ctx = context
     end
 
