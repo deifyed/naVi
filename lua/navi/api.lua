@@ -5,7 +5,6 @@ local openai = require("navi.openai")
 local utils = require("navi.utils")
 local conversation = require("navi.conversation")
 local buffer = require("navi.buffer")
-local notification = require("navi.notification")
 
 local function request(cfg, type, content, context, callback)
     conversation.PushRequest(type, content, context)
