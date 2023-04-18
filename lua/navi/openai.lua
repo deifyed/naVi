@@ -1,5 +1,6 @@
 local http = require("http")
 local log = require("navi.log")
+local notification = require("navi.notification")
 
 local M = {}
 
@@ -13,6 +14,8 @@ function M.request(cfg, messages, callback)
     end
 
     log.d(vim.fn.json_encode(messages))
+
+    notification.Notify(token, "begin", "Request sent...", "Requesting help from OpenAI")
 
     http.request({
         http.methods.POST,
@@ -30,6 +33,7 @@ function M.request(cfg, messages, callback)
         callback = function(err, response)
             if err then
                 log.e(err)
+                notification.Notify(token, "failed", nil, nil)
                 return
             end
 
@@ -42,8 +46,10 @@ function M.request(cfg, messages, callback)
                         callback(data.choices[1].message.content)
                     end
                 end)
+                notification.Notify(token, "end", nil, nil)
             else
                 log.d(vim.inspect(response))
+                notification.Notify(token, "failed", nil, nil)
             end
         end,
     })

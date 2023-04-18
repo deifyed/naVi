@@ -23,7 +23,7 @@ local function updateSpinner(token)
 
         notif_data.notification = vim.notify(nil, nil, {
             hide_from_history = true,
-            icon = spinner_frames[new_spinner],
+            icon = spinner_frames[new_spinner + 1],
             replace = notif_data.notification,
         })
 
@@ -45,11 +45,20 @@ function M.Notify(token, kind, message, title)
         })
 
         -- start spinner
-        notif_data.spinner = 1
+        notif_data.spinner = 0
         updateSpinner(token)
     elseif kind == "end" and notif_data then
-        notif_data.notification = vim.notify(message and message or "Completed", vim.log.levels.INFO, {
+        notif_data.notification = vim.notify(message and message or "Completed successfully", vim.log.levels.INFO, {
             icon = "",
+            replace = notif_data.notification,
+            timeout = 3000,
+        })
+
+        -- end spinner
+        notif_data.spinner = nil
+    elseif kind == "failed" and notif_data then
+        notif_data.notification = vim.notify(message and message or "Request failed!", vim.log.levels.ERROR, {
+            icon = "✖",
             replace = notif_data.notification,
             timeout = 3000,
         })
