@@ -19,8 +19,15 @@ function M.error(msg)
     end
 end
 
+function M.warn(msg)
+    if M.log_level >= 2 then
+        print("[naVi] WARN: " .. msg)
+    end
+end
+
 M.d = M.debug
 M.e = M.error
+M.w = M.warn
 
 function M.setup(cfg)
     if cfg.debug then
