@@ -44,7 +44,11 @@ function M.request_review(cfg, buf, from_row, to_row)
     log.d(vim.inspect({ code = code }))
 
     request(cfg, "review", nil, code, function(response)
-        buffer.CreateNewBufferWithContent(response)
+        if cfg.report_window.window == "floating" then
+            buffer.CreateFloatingWindowWithNewBuffer(cfg, response, " OpenAI review report ")
+        else
+            buffer.CreateNewBufferWithContent(response)
+        end
     end)
 end
 
