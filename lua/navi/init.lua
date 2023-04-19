@@ -15,6 +15,12 @@ local M = {
             style = "minimal",
             relative = "editor",
         },
+        report_window = {
+            window = "floating",
+            border = "single",
+            style = "minimal",
+            relative = "editor",
+        },
     },
 }
 
