@@ -16,6 +16,9 @@ changes to the selected text. For example, remove a bug.
 `navi.openFile()` will open a prompt using the current file as context. Use this prompt to get naVi to make
 changes to the current file. For example, add a new function.
 
+`navi.requestReview()` will request a review using the current selection as context. The final report will open in a separate window,
+and will not alter the selected text.
+
 ## Installation
 
 ### Requirements
@@ -33,6 +36,27 @@ Add the following to your Packer config
         requires = {'jcdickinson/http.nvim', run = 'cargo build --workspace --release'},
     })
 ```
+### Lazy
+
+Add the following to your Lazy.vim config
+
+    {
+      'deifyed/naVi',
+      dependencies = { -- optional packages
+        {
+          "jcdickinson/http.nvim", build = "cargo build --workspace --release",
+        },
+      },
+      config = function()
+        require("navi").setup({ })
+      end,
+      keys = {
+        { "<C-PageDown>", "<cmd>lua require('navi').open()<cr>", mode = "i", desc = "NaVI prompt" },
+        { "<C-PageDown>", "<cmd>lua require('navi').openRange()<cr>", mode = "v", desc = "NaVI prompt with context" },
+        { "<C-PageUp>", "<cmd>lua require('navi').requestReview()<cr>", mode = "v", desc = "NaVI request review" },
+      },
+    }
+
 
 ## Configuration
 
@@ -52,16 +76,29 @@ navi.setup({
     openai_temperature = 0.6,
     -- Debug mode. Optional. Default is false
     debug = false, -- Alternatively, use environment variable NAVI_DEBUG=true
+    -- Setup for input window 
+    prompt_window = {
+        border = "single",
+        style = "minimal",
+        relative = "editor",
+    },
+    -- Setup for window showing various reports
+    report_window = {
+        -- Specifies if the report will be shown in a vertical window or in a floating window.
+        window = "floating",
+        border = "single",
+        style = "minimal",
+        relative = "editor",
+    },
 })
 
 -- Set keybindings
 vim.api.nvim_set_keymap('v', '<C-PageDown>', '', { callback = navi.openRange })
 vim.api.nvim_set_keymap('i', '<C-PageDown>', '', { callback = navi.open })
-```
+vim.api.nvim_set_keymap('v', '<C-PageUp>', '', { callback = navi.requestReview })
 
 ## Roadmap
 
-- Add review functionality
 - Add explain functionality
 - Add a chatbot mode for discussing code
 
