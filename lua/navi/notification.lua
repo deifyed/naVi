@@ -1,4 +1,11 @@
-vim.notify = require("notify")
+vim.notify = pcall(require, "notify")
+local log = require("navi.log")
+
+if not vim.notify then
+    log.warn("Notifications not available. Install vim-notify to enable notifications.")
+
+    function vim.notify(_, _, _) end
+end
 
 local M = {}
 
