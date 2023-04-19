@@ -11,6 +11,10 @@ function M.GetSelectedRows()
         start_row, end_row = end_row, start_row
     end
 
+    if start_row > 0 then
+        start_row = start_row - 1
+    end
+
     return start_row, end_row
 end
 
@@ -27,10 +31,6 @@ function M.CreateNewBufferWithContent(content)
 end
 
 function M.GetSelectedLines(buf, from_row, to_row)
-    if from_row > 0 then
-        from_row = from_row - 1
-    end
-
     log.d(vim.inspect({
         buf = buf,
         from_row = from_row,
