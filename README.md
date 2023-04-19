@@ -42,7 +42,7 @@ Add the following to your Lazy.vim config
 
     {
       'deifyed/naVi',
-      dependencies = { -- optional packages
+      dependencies = { 
         {
           "jcdickinson/http.nvim", build = "cargo build --workspace --release",
         },
