@@ -96,6 +96,7 @@ navi.setup({
 vim.api.nvim_set_keymap('v', '<C-PageDown>', '', { callback = navi.openRange })
 vim.api.nvim_set_keymap('i', '<C-PageDown>', '', { callback = navi.open })
 vim.api.nvim_set_keymap('v', '<C-PageUp>', '', { callback = navi.requestReview })
+```
 
 ## Roadmap
 
