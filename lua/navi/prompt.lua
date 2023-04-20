@@ -1,3 +1,4 @@
+local log = require("navi.log")
 local api = vim.api
 
 local M = {}
@@ -42,6 +43,21 @@ function M.open(cfg, callback)
 
     local row = math.ceil((height - win_height) / 2 - 1)
     local col = math.ceil((width - win_width) / 2)
+
+    -- when zoomed in too much, prompt will break due to win_height being less than zero
+    if win_height < 1 then
+        win_height = 1
+    end
+
+    log.d(vim.inspect({
+        message = "Prompt window dimensions",
+        width = width,
+        height = height,
+        win_height = win_height,
+        win_width = win_width,
+        row = row,
+        col = col,
+    }))
 
     local opts = {
         style = cfg.prompt_window.style,
