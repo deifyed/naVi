@@ -8,4 +8,11 @@ M.primer = table.concat({
     "- End with a general verdict as a short summary",
 }, "\n")
 
+function M.prefixContent(content)
+    return table.concat({
+        "Review the following code:",
+        content,
+    }, "\n")
+end
+
 return M

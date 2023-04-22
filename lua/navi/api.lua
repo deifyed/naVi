@@ -42,7 +42,9 @@ function M.request_review(cfg, buf, from_row, to_row)
 
     log.d(vim.inspect({ code = code }))
 
-    codeReviewDialog.PushUserMessage(code)
+    local msg = code_review.prefixContent(code)
+
+    codeReviewDialog.PushUserMessage(msg)
 
     openai.request(cfg, codeReviewDialog.GetMessages(), function(response)
         if response == '""' then
