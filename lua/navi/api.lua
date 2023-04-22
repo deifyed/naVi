@@ -2,6 +2,7 @@ local api = vim.api
 local prompt = require("navi.prompt")
 local openai = require("navi.openai")
 local buffer = require("navi.buffer")
+local utils = require("navi.utils")
 local dialogue = require("navi.dialogue")
 local code_building = require("navi.dialogue.code-building")
 local code_review = require("navi.dialogue.code-review")
@@ -19,7 +20,7 @@ function M.request_without_context(cfg)
     prompt.open(cfg, function(content)
         codeBuildingDialog.PushUserMessage(content)
 
-        openai.requestCodeblock(cfg, codeBuildingDialog.GetMessages(), function(codeblock)
+        local responseHandler = function(codeblock)
             if codeblock == nil then
                 return
             end
@@ -27,7 +28,14 @@ function M.request_without_context(cfg)
             codeBuildingDialog.PushAssistantMessage(table.concat(codeblock, "\n"))
 
             api.nvim_buf_set_lines(current_buffer, row - 1, row - 1, false, codeblock)
-        end)
+        end
+
+        openai.request({
+            cfg = cfg,
+            response_interceptor = utils.extractCodeblock,
+            callback = responseHandler,
+            messages = codeBuildingDialog.GetMessages(),
+        })
     end)
 end
 
@@ -37,19 +45,25 @@ function M.request_review(cfg, buf, from_row, to_row)
 
     codeReviewDialog.PushUserMessage(msg)
 
-    openai.requestCodeblock(cfg, codeReviewDialog.GetMessages(), function(codeblock)
-        if codeblock == nil then
+    local responseHandler = function(response)
+        if response == nil then
             return
         end
 
-        codeReviewDialog.PushAssistantMessage(table.concat(codeblock, "\n"))
+        codeReviewDialog.PushAssistantMessage(response)
 
         if cfg.report_window.window == "floating" then
-            buffer.CreateFloatingWindowWithNewBuffer(cfg, codeblock, " OpenAI review report ")
+            buffer.CreateFloatingWindowWithNewBuffer(cfg, response, " OpenAI review report ")
         else
-            buffer.CreateNewBufferWithContent(codeblock)
+            buffer.CreateNewBufferWithContent(response)
         end
-    end)
+    end
+
+    openai.request({
+        cfg = cfg,
+        messages = codeReviewDialog.GetMessages(),
+        callback = responseHandler,
+    })
 end
 
 function M.request_with_context(cfg, buf, from_row, to_row)
@@ -59,7 +73,7 @@ function M.request_with_context(cfg, buf, from_row, to_row)
         local msg = code_building.withCodeContext(code, content)
         codeBuildingDialog.PushUserMessage(msg)
 
-        openai.requestCodeblock(cfg, codeBuildingDialog.GetMessages(), function(codeblock)
+        local responseHandler = function(codeblock)
             if codeblock == nil then
                 return
             end
@@ -67,7 +81,14 @@ function M.request_with_context(cfg, buf, from_row, to_row)
             codeBuildingDialog.PushAssistantMessage(table.concat(codeblock, "\n"))
 
             api.nvim_buf_set_lines(buf, from_row, to_row, false, codeblock)
-        end)
+        end
+
+        openai.request({
+            cfg = cfg,
+            messages = codeBuildingDialog.GetMessages(),
+            response_interceptor = utils.extractCodeblock,
+            callback = responseHandler,
+        })
     end)
 end
 

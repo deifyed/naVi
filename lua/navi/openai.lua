@@ -5,8 +5,21 @@ local utils = require("navi.utils")
 
 local M = {}
 
-function M.requestCodeblock(cfg, messages, callback)
-    local token = vim.env.OPENAI_TOKEN or cfg.openai_token
+function M.request(user_opts)
+    local opts = {
+        cfg = {},
+        response_interceptor = function(response)
+            return utils.stringSplit(response, "\n")
+        end,
+        callback = function(_) end,
+        messages = {},
+    }
+
+    for k, v in pairs(user_opts) do
+        opts[k] = v
+    end
+
+    local token = vim.env.OPENAI_TOKEN or opts.cfg.openai_token
 
     if token == "" then
         log.e("Missing OpenAI token. Please set the environment variable OPENAI_TOKEN")
@@ -14,7 +27,7 @@ function M.requestCodeblock(cfg, messages, callback)
         return
     end
 
-    log.d(vim.fn.json_encode(messages))
+    log.d(vim.fn.json_encode(opts.messages))
 
     notification.Notify(token, "begin", "Request sent...", "Requesting help from OpenAI")
 
@@ -22,10 +35,10 @@ function M.requestCodeblock(cfg, messages, callback)
         http.methods.POST,
         "https://api.openai.com/v1/chat/completions",
         vim.fn.json_encode({
-            model = cfg.openai_model,
-            messages = messages,
-            max_tokens = cfg.openai_max_tokens,
-            temperature = cfg.openai_temperature,
+            model = opts.cfg.openai_model,
+            messages = opts.messages,
+            max_tokens = opts.cfg.openai_max_tokens,
+            temperature = opts.cfg.openai_temperature,
         }),
         headers = {
             ["Authorization"] = "Bearer " .. token,
@@ -34,32 +47,36 @@ function M.requestCodeblock(cfg, messages, callback)
         callback = function(err, response)
             if err then
                 log.e(err)
+
                 notification.Notify(token, "failed", nil, nil)
+
                 return
             end
 
-            if response.code < 400 then
-                vim.schedule(function()
-                    local data = vim.fn.json_decode(response.body)
-
-                    log.d(vim.inspect(data))
-                    if data then
-                        if data.choices[1].message.content == '""' then
-                            return nil
-                        end
-
-                        local codeblock = utils.extractCodeblock(data.choices[1].message.content)
-
-                        log.d(vim.inspect({ codeblock = codeblock }))
-
-                        callback(codeblock)
-                    end
-                end)
-                notification.Notify(token, "end", nil, nil)
-            else
+            if response.code > 400 then
                 log.d(vim.inspect(response))
+
                 notification.Notify(token, "failed", nil, nil)
             end
+
+            vim.schedule(function()
+                local data = vim.fn.json_decode(response.body)
+
+                log.d(vim.inspect(data))
+                if data then
+                    if data.choices[1].message.content == '""' then
+                        return nil
+                    end
+
+                    local interceptedResponse = opts.response_interceptor(data.choices[1].message.content)
+
+                    log.d(vim.inspect({ interceptedResponse = interceptedResponse }))
+
+                    opts.callback(interceptedResponse)
+                end
+            end)
+
+            notification.Notify(token, "end", nil, nil)
         end,
     })
 end

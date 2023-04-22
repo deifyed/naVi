@@ -4,7 +4,7 @@ local M = {}
 
 local codeblock_delimiter_prefix = "^```"
 
-local function stringSplit(inputstr, sep)
+function M.stringSplit(inputstr, sep)
     if sep == nil then
         sep = "%s"
     end
@@ -49,7 +49,7 @@ local function getCodeblockIndices(lines)
 end
 
 function M.extractCodeblock(response)
-    local splitResponse = stringSplit(response, "\n")
+    local splitResponse = M.stringSplit(response, "\n")
     local start, stop = getCodeblockIndices(splitResponse)
 
     log.d(vim.inspect({
