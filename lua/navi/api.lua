@@ -2,7 +2,7 @@ local api = vim.api
 local prompt = require("navi.prompt")
 local openai = require("navi.openai")
 local buffer = require("navi.buffer")
-local utils = require("navi.utils")
+local interceptors = require("navi.openai.interceptors")
 local dialogue = require("navi.dialogue")
 local code_building = require("navi.dialogue.code-building")
 local code_review = require("navi.dialogue.code-review")
@@ -32,7 +32,7 @@ function M.request_without_context(cfg)
 
         openai.request({
             cfg = cfg,
-            response_interceptor = utils.extractCodeblock,
+            response_interceptor = interceptors.extractCodeblock,
             callback = responseHandler,
             messages = codeBuildingDialog.GetMessages(),
         })
@@ -86,7 +86,7 @@ function M.request_with_context(cfg, buf, from_row, to_row)
         openai.request({
             cfg = cfg,
             messages = codeBuildingDialog.GetMessages(),
-            response_interceptor = utils.extractCodeblock,
+            response_interceptor = interceptors.extractCodeblock,
             callback = responseHandler,
         })
     end)

@@ -1,7 +1,7 @@
 local http = require("http")
 local log = require("navi.log")
 local notification = require("navi.notification")
-local utils = require("navi.utils")
+local strings = require("navi.utils.strings")
 
 local M = {}
 
@@ -9,7 +9,7 @@ function M.request(user_opts)
     local opts = {
         cfg = {},
         response_interceptor = function(response)
-            return utils.stringSplit(response, "\n")
+            return strings.split(response, "\n")
         end,
         callback = function(_) end,
         messages = {},

@@ -1,30 +1,10 @@
 local log = require("navi.log")
+local strings = require("navi.utils.strings")
+local tables = require("navi.utils.tables")
 
 local M = {}
 
 local codeblock_delimiter_prefix = "^```"
-
-function M.stringSplit(inputstr, sep)
-    if sep == nil then
-        sep = "%s"
-    end
-
-    local t = {}
-    for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
-        table.insert(t, str)
-    end
-
-    return t
-end
-
-local function tableLength(T)
-    local count = 0
-    for _ in pairs(T) do
-        count = count + 1
-    end
-
-    return count
-end
 
 local function getCodeblockIndices(lines)
     local start = -1
@@ -42,14 +22,14 @@ local function getCodeblockIndices(lines)
 
     if start == -1 and stop == -1 then
         start = 1
-        stop = tableLength(lines)
+        stop = tables.length(lines)
     end
 
     return start, stop
 end
 
 function M.extractCodeblock(response)
-    local splitResponse = M.stringSplit(response, "\n")
+    local splitResponse = strings.split(response, "\n")
     local start, stop = getCodeblockIndices(splitResponse)
 
     log.d(vim.inspect({
