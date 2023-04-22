@@ -1,6 +1,7 @@
 local http = require("http")
 local log = require("navi.log")
 local notification = require("navi.notification")
+local utils = require("navi.utils")
 
 local M = {}
 
@@ -47,7 +48,11 @@ function M.requestCodeblock(cfg, messages, callback)
                             return nil
                         end
 
-                        callback(data.choices[1].message.content)
+                        local codeblock = utils.extractCodeblock(data.choices[1].message.content)
+
+                        log.d(vim.inspect({ codeblock = codeblock }))
+
+                        callback(codeblock)
                     end
                 end)
                 notification.Notify(token, "end", nil, nil)
