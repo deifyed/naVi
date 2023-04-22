@@ -19,6 +19,9 @@ changes to the current file. For example, add a new function.
 `navi.requestReview()` will request a review using the current selection as context. The final report will open in a separate window,
 and will not alter the selected text.
 
+`navi.explainRange()` will provide an explanation of code using the current selection as context. The explanation will
+open in a separate window and will not alter the selected text.
+
 ## Installation
 
 ### Requirements
@@ -96,11 +99,11 @@ navi.setup({
 vim.api.nvim_set_keymap('v', '<C-PageDown>', '', { callback = navi.openRange })
 vim.api.nvim_set_keymap('i', '<C-PageDown>', '', { callback = navi.open })
 vim.api.nvim_set_keymap('v', '<C-PageUp>', '', { callback = navi.requestReview })
+vim.api.nvim_set_keymap('v', '<C-End>', '', { callback = navi.explainRange })
 ```
 
 ## Roadmap
 
-- Add explain functionality
 - Add a chatbot mode for discussing code
 
 ## FAQ

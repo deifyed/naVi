@@ -26,22 +26,6 @@ local M = {
 
 log.setup(M.config)
 
-function M.openFile()
-    log.d("Opening navi.request_with_context()")
-
-    local buf = api.nvim_get_current_buf()
-    local start_position = 1
-    local end_position = api.nvim_buf_line_count(buf)
-
-    log.d(vim.inspect({
-        buf = buf,
-        start_position = start_position,
-        end_position = end_position,
-    }))
-
-    napi.request_with_context(M.config, buf, start_position, end_position)
-end
-
 function M.requestReview()
     log.d("Opening navi.request_review()")
 
@@ -55,6 +39,27 @@ function M.requestReview()
     }))
 
     napi.request_review(M.config, buf, start_position, end_position)
+end
+
+function M.explainRange()
+    log.d("Opening navi.ExplainRange()")
+
+    local buf = api.nvim_get_current_buf()
+    local start_position, end_position = buffer.GetSelectedRows()
+
+    log.d(vim.inspect({
+        buf = buf,
+        start_position = start_position,
+        end_position = end_position,
+    }))
+
+    napi.ExplainRange(M.config, buf, start_position, end_position)
+end
+
+function M.open()
+    log.d("Opening navi.request_without_context()")
+
+    napi.request_without_context(M.config)
 end
 
 function M.openRange()
@@ -72,10 +77,20 @@ function M.openRange()
     napi.request_with_context(M.config, buf, start_position, end_position)
 end
 
-function M.open()
-    log.d("Opening navi.request_without_context()")
+function M.openFile()
+    log.d("Opening navi.request_with_context()")
 
-    napi.request_without_context(M.config)
+    local buf = api.nvim_get_current_buf()
+    local start_position = 1
+    local end_position = api.nvim_buf_line_count(buf)
+
+    log.d(vim.inspect({
+        buf = buf,
+        start_position = start_position,
+        end_position = end_position,
+    }))
+
+    napi.request_with_context(M.config, buf, start_position, end_position)
 end
 
 function M.setup(opts)
