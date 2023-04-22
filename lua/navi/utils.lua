@@ -48,7 +48,7 @@ local function getCodeblockIndices(lines)
     return start, stop
 end
 
-function M.cleanResponse(response)
+function M.extractCodeblock(response)
     local splitResponse = stringSplit(response, "\n")
     local start, stop = getCodeblockIndices(splitResponse)
 
