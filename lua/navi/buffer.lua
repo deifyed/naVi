@@ -87,6 +87,8 @@ function M.GetSelectedLines(buf, from_row, to_row)
     local lines = api.nvim_buf_get_lines(buf, from_row, to_row, false)
     local code = table.concat(lines, "\n")
 
+    log.d(vim.inspect({ code = code }))
+
     return code
 end
 
