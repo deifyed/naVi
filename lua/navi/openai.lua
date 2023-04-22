@@ -1,10 +1,11 @@
 local http = require("http")
 local log = require("navi.log")
 local notification = require("navi.notification")
+local utils = require("navi.utils")
 
 local M = {}
 
-function M.request(cfg, messages, callback)
+function M.requestCodeblock(cfg, messages, callback)
     local token = vim.env.OPENAI_TOKEN or cfg.openai_token
 
     if token == "" then
@@ -43,7 +44,15 @@ function M.request(cfg, messages, callback)
 
                     log.d(vim.inspect(data))
                     if data then
-                        callback(data.choices[1].message.content)
+                        if data.choices[1].message.content == '""' then
+                            return nil
+                        end
+
+                        local codeblock = utils.extractCodeblock(data.choices[1].message.content)
+
+                        log.d(vim.inspect({ codeblock = codeblock }))
+
+                        callback(codeblock)
                     end
                 end)
                 notification.Notify(token, "end", nil, nil)
