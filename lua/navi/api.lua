@@ -1,5 +1,4 @@
 local api = vim.api
-local log = require("navi.log")
 local prompt = require("navi.prompt")
 local openai = require("navi.openai")
 local buffer = require("navi.buffer")
@@ -34,9 +33,6 @@ end
 
 function M.request_review(cfg, buf, from_row, to_row)
     local code = buffer.GetSelectedLines(buf, from_row, to_row)
-
-    log.d(vim.inspect({ code = code }))
-
     local msg = code_review.prefixContent(code)
 
     codeReviewDialog.PushUserMessage(msg)
@@ -58,8 +54,6 @@ end
 
 function M.request_with_context(cfg, buf, from_row, to_row)
     local code = buffer.GetSelectedLines(buf, from_row, to_row)
-
-    log.d(vim.inspect({ code = code }))
 
     prompt.open(cfg, function(content)
         local msg = code_building.withCodeContext(code, content)
