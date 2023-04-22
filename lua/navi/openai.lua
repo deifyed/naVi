@@ -4,7 +4,7 @@ local notification = require("navi.notification")
 
 local M = {}
 
-function M.request(cfg, messages, callback)
+function M.requestCodeblock(cfg, messages, callback)
     local token = vim.env.OPENAI_TOKEN or cfg.openai_token
 
     if token == "" then
@@ -43,6 +43,10 @@ function M.request(cfg, messages, callback)
 
                     log.d(vim.inspect(data))
                     if data then
+                        if data.choices[1].message.content == '""' then
+                            return nil
+                        end
+
                         callback(data.choices[1].message.content)
                     end
                 end)

@@ -21,8 +21,8 @@ function M.request_without_context(cfg)
     prompt.open(cfg, function(content)
         codeBuildingDialog.PushUserMessage(content)
 
-        openai.request(cfg, codeBuildingDialog.GetMessages(), function(response)
-            if response == '""' then
+        openai.requestCodeblock(cfg, codeBuildingDialog.GetMessages(), function(response)
+            if response == nil then
                 return
             end
 
@@ -46,8 +46,8 @@ function M.request_review(cfg, buf, from_row, to_row)
 
     codeReviewDialog.PushUserMessage(msg)
 
-    openai.request(cfg, codeReviewDialog.GetMessages(), function(response)
-        if response == '""' then
+    openai.requestCodeblock(cfg, codeReviewDialog.GetMessages(), function(response)
+        if response == nil then
             return
         end
 
@@ -74,8 +74,8 @@ function M.request_with_context(cfg, buf, from_row, to_row)
         local msg = code_building.withCodeContext(code, content)
         codeBuildingDialog.PushUserMessage(msg)
 
-        openai.request(cfg, codeBuildingDialog.GetMessages(), function(response)
-            if response == '""' then
+        openai.requestCodeblock(cfg, codeBuildingDialog.GetMessages(), function(response)
+            if response == nil then
                 return
             end
 
