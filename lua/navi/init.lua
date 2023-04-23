@@ -93,6 +93,12 @@ function M.openFile()
     napi.request_with_context(M.config, buf, start_position, end_position)
 end
 
+function M.openChat()
+    log.d("Opening navi.request_chat()")
+
+    napi.OpenChat(M.config)
+end
+
 function M.setup(opts)
     for k, v in pairs(opts) do
         M.config[k] = v
