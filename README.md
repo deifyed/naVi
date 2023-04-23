@@ -22,6 +22,8 @@ and will not alter the selected text.
 `navi.explainRange()` will provide an explanation of code using the current selection as context. The explanation will
 open in a separate window and will not alter the selected text.
 
+`navi.openChat()` will open a chat interface where you can discuss your code with GPT.
+
 ## Installation
 
 ### Requirements
@@ -100,6 +102,7 @@ vim.api.nvim_set_keymap('v', '<C-PageDown>', '', { callback = navi.openRange })
 vim.api.nvim_set_keymap('i', '<C-PageDown>', '', { callback = navi.open })
 vim.api.nvim_set_keymap('v', '<C-PageUp>', '', { callback = navi.requestReview })
 vim.api.nvim_set_keymap('v', '<C-End>', '', { callback = navi.explainRange })
+vim.api.nvim_set_keymap('n', '<C-End>', '', { callback = navi.openChat })
 ```
 
 ## Roadmap
