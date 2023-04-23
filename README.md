@@ -107,7 +107,10 @@ vim.api.nvim_set_keymap('n', '<C-End>', '', { callback = navi.openChat })
 
 ## Roadmap
 
-- Add a chatbot mode for discussing code
+- Make the current file context of the chat interface
+- Make the chat toggleable
+- Improve prompts
+- Refactor
 
 ## FAQ
 
