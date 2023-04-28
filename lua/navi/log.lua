@@ -5,7 +5,7 @@
 -- log_level = 4: log errors, warnings, info, and debug
 -- log_level = 5: log everything
 
-local M = { log_level = 0 }
+local M = { log_level = 1 }
 
 function M.debug(msg)
     if M.log_level >= 4 then
