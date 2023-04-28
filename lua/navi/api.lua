@@ -1,4 +1,5 @@
 local api = vim.api
+local log = require("navi.log")
 local prompt = require("navi.prompt")
 local openai = require("navi.openai")
 local buffer = require("navi.buffer")
@@ -41,8 +42,25 @@ function M.request_without_context(cfg)
     end)
 end
 
-function M.request_review(cfg, buf, from_row, to_row)
-    local code = buffer.GetSelectedLines(buf, from_row, to_row)
+local get_code = function()
+    local buf = api.nvim_get_current_buf()
+    local start_position, end_position = buffer.GetSelectedRows()
+
+    log.d(vim.inspect({
+        buf = buf,
+        start_position = start_position,
+        end_position = end_position,
+    }))
+
+    local code = buffer.GetSelectedLines(buf, start_position, end_position)
+    local set_code = function(codeblock)
+        api.nvim_buf_set_lines(buf, start_position, end_position, false, codeblock)
+    end
+    return code, set_code
+end
+
+function M.request_review(cfg)
+    local code = get_code()
     local msg = code_review.prefixContent(code)
 
     codeReviewDialog.PushUserMessage(msg)
@@ -68,8 +86,8 @@ function M.request_review(cfg, buf, from_row, to_row)
     })
 end
 
-function M.request_with_context(cfg, buf, from_row, to_row)
-    local code = buffer.GetSelectedLines(buf, from_row, to_row)
+function M.request_with_context(cfg)
+    local code, set_code = get_code()
 
     prompt.open(cfg, function(content)
         local msg = code_building.withCodeContext(code, content)
@@ -81,8 +99,7 @@ function M.request_with_context(cfg, buf, from_row, to_row)
             end
 
             codeBuildingDialog.PushAssistantMessage(table.concat(codeblock, "\n"))
-
-            api.nvim_buf_set_lines(buf, from_row, to_row, false, codeblock)
+            set_code(codeblock)
         end
 
         openai.request({
@@ -94,8 +111,8 @@ function M.request_with_context(cfg, buf, from_row, to_row)
     end)
 end
 
-function M.ExplainRange(cfg, buf, from_row, to_row)
-    local code = buffer.GetSelectedLines(buf, from_row, to_row)
+function M.ExplainRange(cfg)
+    local code = get_code()
 
     local codeExplanationDialog = dialogue.New(code_explanation.primer)
     codeExplanationDialog.PushUserMessage(code_explanation.withCodeContext(code))
