@@ -5,13 +5,7 @@
 -- log_level = 4: log errors, warnings, info, and debug
 -- log_level = 5: log everything
 
-local M = { log_level = 0 }
-
-function M.debug(msg)
-    if M.log_level >= 4 then
-        print("[naVi] DEBUG: " .. msg)
-    end
-end
+local M = { log_level = 1 }
 
 function M.error(msg)
     if M.log_level >= 1 then
@@ -22,6 +16,12 @@ end
 function M.warn(msg)
     if M.log_level >= 2 then
         print("[naVi] WARN: " .. msg)
+    end
+end
+
+function M.debug(msg)
+    if M.log_level >= 4 then
+        print("[naVi] DEBUG: " .. msg)
     end
 end
 
