@@ -19,6 +19,43 @@ local function getOpenAIToken(opts)
     return opts.cfg.openai_token or ""
 end
 
+local function responseHandler(token, callback, interceptor)
+    return function(err, response)
+        if err then
+            log.e(err)
+
+            notification.Notify(token, "failed", nil, nil)
+
+            return
+        end
+
+        if response.code > 400 then
+            log.d(vim.inspect(response))
+
+            notification.Notify(token, "failed", nil, nil)
+        end
+
+        vim.schedule(function()
+            local data = vim.fn.json_decode(response.body)
+
+            log.d(vim.inspect(data))
+            if data then
+                if data.choices[1].message.content == '""' then
+                    return
+                end
+
+                local interceptedResponse = interceptor(data.choices[1].message.content)
+
+                log.d(vim.inspect({ interceptedResponse = interceptedResponse }))
+
+                callback(interceptedResponse)
+            end
+        end)
+
+        notification.Notify(token, "end", nil, nil)
+    end
+end
+
 function M.request(user_opts)
     local opts = {
         cfg = {},
@@ -59,40 +96,7 @@ function M.request(user_opts)
             ["Authorization"] = "Bearer " .. token,
             ["Content-Type"] = "application/json",
         },
-        callback = function(err, response)
-            if err then
-                log.e(err)
-
-                notification.Notify(token, "failed", nil, nil)
-
-                return
-            end
-
-            if response.code > 400 then
-                log.d(vim.inspect(response))
-
-                notification.Notify(token, "failed", nil, nil)
-            end
-
-            vim.schedule(function()
-                local data = vim.fn.json_decode(response.body)
-
-                log.d(vim.inspect(data))
-                if data then
-                    if data.choices[1].message.content == '""' then
-                        return
-                    end
-
-                    local interceptedResponse = opts.response_interceptor(data.choices[1].message.content)
-
-                    log.d(vim.inspect({ interceptedResponse = interceptedResponse }))
-
-                    opts.callback(interceptedResponse)
-                end
-            end)
-
-            notification.Notify(token, "end", nil, nil)
-        end,
+        callback = responseHandler(token, opts.callback, opts.response_interceptor),
     })
 end
 
