@@ -5,6 +5,20 @@ local strings = require("navi.common.utils.strings")
 
 local M = {}
 
+local function getOpenAIToken(opts)
+    if vim.env.OPENAI_TOKEN then
+        log.w("OPENAI token is deprecated, use opts or OPENAI_API_KEY environment variable")
+
+        return vim.env.OPENAI_TOKEN
+    end
+
+    if vim.env.OPENAI_API_KEY then
+        return vim.env.OPENAI_API_KEY
+    end
+
+    return opts.cfg.openai_token or ""
+end
+
 function M.request(user_opts)
     local opts = {
         cfg = {},
@@ -19,11 +33,12 @@ function M.request(user_opts)
         opts[k] = v
     end
 
-    local token = vim.env.OPENAI_TOKEN or opts.cfg.openai_token
+    local token = getOpenAIToken(opts)
 
     if token == "" then
         log.e("Missing OpenAI token. Please set the environment variable OPENAI_TOKEN")
         log.e("or set the openai_token option in your config.")
+
         return
     end
 
@@ -65,7 +80,7 @@ function M.request(user_opts)
                 log.d(vim.inspect(data))
                 if data then
                     if data.choices[1].message.content == '""' then
-                        return nil
+                        return
                     end
 
                     local interceptedResponse = opts.response_interceptor(data.choices[1].message.content)
