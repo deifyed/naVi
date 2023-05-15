@@ -1,4 +1,4 @@
-local log = require("navi.log")
+local log = require("navi.common.log")
 local api = vim.api
 
 local M = {}

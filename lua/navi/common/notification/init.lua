@@ -1,4 +1,4 @@
-local log = require("navi.log")
+local log = require("navi.common.log")
 
 local ok, vimnotify = pcall(require, "notify")
 if not ok then

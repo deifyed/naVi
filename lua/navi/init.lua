@@ -1,7 +1,10 @@
 local api = vim.api
-local log = require("navi.log")
-local buffer = require("navi.buffer")
-local napi = require("navi.api")
+local log = require("navi.common.log")
+local buffer = require("navi.common.buffer")
+local chat = require("navi.features.chat")
+local explain = require("navi.features.explain")
+local prompt = require("navi.features.prompt")
+local review = require("navi.features.review")
 
 local M = {
     config = {
@@ -26,8 +29,28 @@ local M = {
 
 log.setup(M.config)
 
+function M.Review()
+    log.d("Opening navi.Review()")
+
+    local buf = api.nvim_get_current_buf()
+    local start_position, end_position = buffer.GetSelectedRows()
+
+    log.d(vim.inspect({
+        buf = buf,
+        start_position = start_position,
+        end_position = end_position,
+    }))
+
+    review.RequestReview(M.config, buf, start_position, end_position)
+end
 function M.requestReview()
-    log.d("Opening navi.request_review()")
+    log.w("navi.requestReview() is deprecated. Use navi.Review() instead")
+
+    M.Review()
+end
+
+function M.Explain()
+    log.d("Opening navi.Explain()")
 
     local buf = api.nvim_get_current_buf()
     local start_position, end_position = buffer.GetSelectedRows()
@@ -38,32 +61,27 @@ function M.requestReview()
         end_position = end_position,
     }))
 
-    napi.request_review(M.config, buf, start_position, end_position)
+    explain.ExplainRange(M.config, buf, start_position, end_position)
 end
-
 function M.explainRange()
-    log.d("Opening navi.ExplainRange()")
+    log.w("navi.explainRange() is deprecated. Use navi.Explain() instead")
 
-    local buf = api.nvim_get_current_buf()
-    local start_position, end_position = buffer.GetSelectedRows()
-
-    log.d(vim.inspect({
-        buf = buf,
-        start_position = start_position,
-        end_position = end_position,
-    }))
-
-    napi.ExplainRange(M.config, buf, start_position, end_position)
+    M.Explain()
 end
 
+function M.Append()
+    log.d("Opening navi.Append()")
+
+    prompt.PromptWithoutContext(M.config)
+end
 function M.open()
-    log.d("Opening navi.request_without_context()")
+    log.w("navi.open() is deprecated. Use navi.Append() instead")
 
-    napi.request_without_context(M.config)
+    M.Append()
 end
 
-function M.openRange()
-    log.d("Opening navi.request_with_context()")
+function M.Edit()
+    log.d("Opening navi.Edit()")
 
     local buf = api.nvim_get_current_buf()
     local start_position, end_position = buffer.GetSelectedRows()
@@ -74,11 +92,16 @@ function M.openRange()
         end_position = end_position,
     }))
 
-    napi.request_with_context(M.config, buf, start_position, end_position)
+    prompt.PromptWithContext(M.config, buf, start_position, end_position)
+end
+function M.openRange()
+    log.w("navi.openRange() is deprecated. Use navi.Edit() instead")
+
+    M.Edit()
 end
 
-function M.openFile()
-    log.d("Opening navi.request_with_context()")
+function M.EditBuffer()
+    log.d("Opening navi.EditBuffer()")
 
     local buf = api.nvim_get_current_buf()
     local start_position = 1
@@ -90,13 +113,23 @@ function M.openFile()
         end_position = end_position,
     }))
 
-    napi.request_with_context(M.config, buf, start_position, end_position)
+    prompt.PromptWithContext(M.config, buf, start_position, end_position)
+end
+function M.openFile()
+    log.w("navi.openFile() is deprecated. Use navi.EditBuffer() instead")
+
+    M.EditBuffer()
 end
 
-function M.openChat()
-    log.d("Opening navi.request_chat()")
+function M.Chat()
+    log.d("Opening navi.Chat()")
 
-    napi.OpenChat(M.config)
+    chat.OpenChat(M.config)
+end
+function M.openChat()
+    log.w("navi.openChat() is deprecated. Use navi.Chat() instead")
+
+    M.Chat()
 end
 
 function M.setup(opts)

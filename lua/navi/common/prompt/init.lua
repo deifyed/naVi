@@ -1,4 +1,4 @@
-local log = require("navi.log")
+local log = require("navi.common.log")
 local api = vim.api
 
 local M = {}
@@ -13,8 +13,7 @@ function M.open(cfg, callback)
     api.nvim_create_autocmd({ "BufEnter" }, {
         buffer = buf,
         callback = function()
-            api.nvim_command("stopinsert")
-            api.nvim_feedkeys("i", "n", true)
+            api.nvim_command("startinsert")
         end,
     })
 

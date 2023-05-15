@@ -1,7 +1,7 @@
 local http = require("http")
-local log = require("navi.log")
-local notification = require("navi.notification")
-local strings = require("navi.utils.strings")
+local log = require("navi.common.log")
+local notification = require("navi.common.notification")
+local strings = require("navi.common.utils.strings")
 
 local M = {}
 

@@ -1,6 +1,6 @@
-local log = require("navi.log")
-local strings = require("navi.utils.strings")
-local tables = require("navi.utils.tables")
+local log = require("navi.common.log")
+local strings = require("navi.common.utils.strings")
+local tables = require("navi.common.utils.tables")
 
 local M = {}
 
