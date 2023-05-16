@@ -8,21 +8,21 @@
 
 ## Usage
 
-`navi.open()` will open a prompt. Use this prompt to tell naVi what to do. For example, insert a React component outline.
+`navi.Append()` will open a prompt. Use this prompt to tell naVi what to do. For example, insert a React component outline.
 
-`navi.openRange()` will open a prompt using the current selection as context. Use this prompt to get naVi to make
+`navi.Edit()` will open a prompt using the current selection as context. Use this prompt to get naVi to make
 changes to the selected text. For example, remove a bug.
 
-`navi.openFile()` will open a prompt using the current file as context. Use this prompt to get naVi to make
+`navi.EditBuffer()` will open a prompt using the current file as context. Use this prompt to get naVi to make
 changes to the current file. For example, add a new function.
 
-`navi.requestReview()` will request a review using the current selection as context. The final report will open in a separate window,
+`navi.Review()` will request a review using the current selection as context. The final report will open in a separate window,
 and will not alter the selected text.
 
-`navi.explainRange()` will provide an explanation of code using the current selection as context. The explanation will
+`navi.Explain()` will provide an explanation of code using the current selection as context. The explanation will
 open in a separate window and will not alter the selected text.
 
-`navi.openChat()` will open a chat interface where you can discuss your code with GPT.
+`navi.Chat()` will open a chat interface where you can discuss your code with GPT.
 
 ## Installation
 
@@ -56,9 +56,12 @@ Add the following to your Lazy.vim config
         require("navi").setup({ })
       end,
       keys = {
-        { "<C-PageDown>", "<cmd>lua require('navi').open()<cr>", mode = "i", desc = "NaVI prompt" },
-        { "<C-PageDown>", "<cmd>lua require('navi').openRange()<cr>", mode = "v", desc = "NaVI prompt with context" },
-        { "<C-PageUp>", "<cmd>lua require('navi').requestReview()<cr>", mode = "v", desc = "NaVI request review" },
+        { "<leader>na", "<cmd>lua require('navi').Append()<cr>", mode = "n", desc = "NaVI append" },
+        { "<leader>ne", "<cmd>lua require('navi').Edit()<cr>", mode = "v", desc = "NaVI edit" },
+        { "<leader>nb", "<cmd>lua require('navi').EditBuffer()<cr>", mode = "n", desc = "NaVI edit buffer" },
+        { "<leader>nr", "<cmd>lua require('navi').Review()<cr>", mode = "v", desc = "NaVI review" },
+        { "<leader>nx", "<cmd>lua require('navi').Explain()<cr>", mode = "v", desc = "NaVI explain" },
+        { "<leader>nc", "<cmd>lua require('navi').Chat()<cr>", mode = "n", desc = "NaVI chat" },
       },
     }
 
@@ -98,11 +101,11 @@ navi.setup({
 })
 
 -- Set keybindings
-vim.api.nvim_set_keymap('v', '<C-PageDown>', '', { callback = navi.openRange })
-vim.api.nvim_set_keymap('i', '<C-PageDown>', '', { callback = navi.open })
-vim.api.nvim_set_keymap('v', '<C-PageUp>', '', { callback = navi.requestReview })
-vim.api.nvim_set_keymap('v', '<C-End>', '', { callback = navi.explainRange })
-vim.api.nvim_set_keymap('n', '<C-End>', '', { callback = navi.openChat })
+vim.api.nvim_set_keymap('v', '<leader>ne', '', { callback = navi.Edit })
+vim.api.nvim_set_keymap('i', '<leader>na', '', { callback = navi.Append })
+vim.api.nvim_set_keymap('v', '<leader>nr', '', { callback = navi.Review })
+vim.api.nvim_set_keymap('v', '<leader>ne', '', { callback = navi.Explain })
+vim.api.nvim_set_keymap('n', '<leader>nc', '', { callback = navi.Chat })
 ```
 
 ## Roadmap
@@ -110,7 +113,6 @@ vim.api.nvim_set_keymap('n', '<C-End>', '', { callback = navi.openChat })
 - Make the current file context of the chat interface
 - Make the chat toggleable
 - Improve prompts
-- Refactor
 
 ## FAQ
 
